@@ -1,5 +1,8 @@
-import { Image, Text, TextInput, View } from 'react-native'
+import { Image, Text, View } from 'react-native'
 import Button from '@/components/button/button'
+import Icon from '@/components/icon/icon'
+import Input from '@/components/input/input'
+import { COLORS } from '@/constants/theme'
 import logo from '@/assets/logo.png'
 import { styles } from './login.style'
 
@@ -27,25 +30,23 @@ function Login() {
           </View>
         </View>
 
-        <Text style={styles.title}>Cuidar de voce nunca foi tao facil.</Text>
+        <Text style={styles.title}>Cuidar de você nunca foi tão fácil.</Text>
         <Text style={styles.subtitle}>
-          Acesse sua conta para agendar consultas, encontrar especialistas e acompanhar seus
-          horarios.
+          Acesse sua conta para agendar consultas, encontrar especialistas e acompanhar
+          seus horarios.
         </Text>
 
         <View style={styles.form}>
-          <TextInput
+          <Input
             autoCapitalize="none"
             keyboardType="email-address"
+            leftIcon={<Icon color={COLORS.primaryDark} name="mail" size="md" />}
             placeholder="seu@email.com"
-            placeholderTextColor="#8A98AA"
-            style={styles.input}
           />
-          <TextInput
+          <Input
+            leftIcon={<Icon color={COLORS.primaryDark} name="lockKeyhole" size="md" />}
             placeholder="Senha"
-            placeholderTextColor="#8A98AA"
             secureTextEntry
-            style={styles.input}
           />
           <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
           <Button>Entrar</Button>
@@ -70,7 +71,7 @@ function Login() {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Nao tem uma conta? </Text>
+        <Text style={styles.footerText}>Não tem uma conta? </Text>
         <Text style={styles.footerLink}>Criar conta</Text>
       </View>
     </View>

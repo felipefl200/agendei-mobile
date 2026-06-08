@@ -130,9 +130,6 @@ export const styles = StyleSheet.create({
   form: {
     gap: SPACING[3],
   },
-  input: {
-    ...COMPONENTS.input,
-  },
   forgotPassword: {
     alignSelf: 'flex-end',
     color: COLORS.primary,
