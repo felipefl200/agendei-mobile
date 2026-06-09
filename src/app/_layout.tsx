@@ -3,13 +3,7 @@ import { Stack } from 'expo-router'
 
 export default function RootLayout() {
   return (
-    <KeyboardProvider
-      enabled
-      navigationBarTranslucent={false}
-      preload
-      preserveEdgeToEdge={false}
-      statusBarTranslucent={false}
-    >
+    <KeyboardProvider enabled preload>
       <Stack screenOptions={{ headerShown: false }} />
     </KeyboardProvider>
   )
