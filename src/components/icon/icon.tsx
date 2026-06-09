@@ -1,5 +1,6 @@
 import {
   AtSign,
+  ArrowLeft,
   Baby,
   Bell,
   CalendarDays,
@@ -10,6 +11,7 @@ import {
   EyeOff,
   FlaskConical,
   HeartPulse,
+  Heart,
   Home,
   LockKeyhole,
   Mail,
@@ -19,6 +21,8 @@ import {
   Phone,
   Search,
   ShieldCheck,
+  SlidersHorizontal,
+  Star,
   Stethoscope,
   User,
   UserSearch,
@@ -29,6 +33,7 @@ import { COLORS, ICON_SIZE } from '@/constants/theme'
 
 const ICONS = {
   atSign: AtSign,
+  arrowLeft: ArrowLeft,
   baby: Baby,
   bell: Bell,
   calendarDays: CalendarDays,
@@ -38,6 +43,7 @@ const ICONS = {
   eye: Eye,
   eyeOff: EyeOff,
   flaskConical: FlaskConical,
+  heart: Heart,
   heartPulse: HeartPulse,
   home: Home,
   lockKeyhole: LockKeyhole,
@@ -48,6 +54,8 @@ const ICONS = {
   phone: Phone,
   search: Search,
   shieldCheck: ShieldCheck,
+  slidersHorizontal: SlidersHorizontal,
+  star: Star,
   stethoscope: Stethoscope,
   user: User,
   userSearch: UserSearch,

@@ -1,6 +1,5 @@
-import Dashboard from '@/screens/dashboard/dashboard'
 import SearchDoctor from '@/screens/search-doctor/search-doctor'
 
-export default function HomeScreen() {
+export default function SearchScreen() {
   return <SearchDoctor />
 }
