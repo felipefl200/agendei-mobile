@@ -1,5 +1,5 @@
 import Booking from '@/screens/booking/booking'
 
-export default function HomeScreen() {
+export default function BookingScreen() {
   return <Booking />
 }
