@@ -11,10 +11,15 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   container: {
-    ...COMPONENTS.screen,
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  content: {
+    flexGrow: 1,
     justifyContent: 'space-between',
     overflow: 'hidden',
     paddingBottom: SPACING[7],
+    paddingHorizontal: SPACING[6],
     paddingTop: SPACING[10],
   },
   backgroundCircle: {

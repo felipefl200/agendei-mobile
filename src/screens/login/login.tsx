@@ -1,4 +1,6 @@
+import { Link } from 'expo-router'
 import { Image, Text, View } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import Button from '@/components/button/button'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
@@ -8,7 +10,15 @@ import { styles } from './login.style'
 
 function Login() {
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView
+      bottomOffset={20}
+      bounces={false}
+      contentContainerStyle={styles.content}
+      keyboardDismissMode="on-drag"
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+    >
       <View style={styles.backgroundCircle} />
 
       <View style={styles.header}>
@@ -72,9 +82,11 @@ function Login() {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Não tem uma conta? </Text>
-        <Text style={styles.footerLink}>Criar conta</Text>
+        <Link href="/register" style={styles.footerLink}>
+          Criar conta
+        </Link>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   )
 }
 
