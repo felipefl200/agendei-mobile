@@ -1,5 +1,5 @@
-import SearchDoctor from '@/screens/search-doctor/search-doctor'
+import SearchDoctorScreen from '@/features/search-doctor/screens/SearchDoctorScreen'
 
 export default function SearchTab() {
-  return <SearchDoctor />
+  return <SearchDoctorScreen />
 }

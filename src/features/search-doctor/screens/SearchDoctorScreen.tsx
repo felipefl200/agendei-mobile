@@ -1,45 +1,15 @@
-import { useRouter } from 'expo-router'
-import { useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
 import DoctorCard from '@/components/search-doctor/doctor-card'
-import { DoctorAvatarVariant } from '@/components/search-doctor/doctor-avatar'
 import FilterChip from '@/components/search-doctor/filter-chip'
 import { COLORS } from '@/constants/theme'
-import { Doctor } from '@/domain/entities/doctor'
-import { useDoctors } from '@/hooks/useDoctors'
-import { useSpecialties } from '@/hooks/useSpecialties'
-import { styles } from './search-doctor.styles'
+import { useSearchDoctorViewModel } from '@/features/search-doctor/view-models/useSearchDoctorViewModel'
+import { styles } from './SearchDoctorScreen.styles'
 
-const avatarVariants: DoctorAvatarVariant[] = ['femaleA', 'maleA', 'femaleB', 'femaleC']
-
-function getDoctorAvatarVariant(index: number) {
-  return avatarVariants[index % avatarVariants.length]
-}
-
-function SearchDoctor() {
-  const router = useRouter()
-  const [search, setSearch] = useState('')
-  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | undefined>()
-  const specialtiesQuery = useSpecialties()
-  const doctorsQuery = useDoctors({
-    page: 1,
-    perPage: 20,
-    search,
-    specialtyId: selectedSpecialtyId,
-  })
-  const doctors = doctorsQuery.data?.doctors ?? []
-
-  function handleSelectDoctor(doctor: Doctor) {
-    router.push({
-      pathname: '/booking',
-      params: {
-        doctorId: doctor.id,
-      },
-    })
-  }
+function SearchDoctorScreen() {
+  const vm = useSearchDoctorViewModel()
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -59,9 +29,9 @@ function SearchDoctor() {
               fieldStyle={styles.searchInputField}
               inputStyle={styles.searchInput}
               leftIcon={<Icon color={COLORS.textMuted} name="search" size="sm" />}
-              onChangeText={setSearch}
+              onChangeText={vm.setQuery}
               placeholder="Buscar médicos ou especialidades"
-              value={search}
+              value={vm.query}
             />
 
             <View style={styles.iconButton}>
@@ -74,17 +44,12 @@ function SearchDoctor() {
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            <FilterChip
-              active={!selectedSpecialtyId}
-              label="Todos"
-              onPress={() => setSelectedSpecialtyId(undefined)}
-            />
-            {(specialtiesQuery.data ?? []).map((specialty) => (
+            {vm.specialties.map((specialty) => (
               <FilterChip
-                key={specialty.id}
-                active={selectedSpecialtyId === specialty.id}
-                label={specialty.name}
-                onPress={() => setSelectedSpecialtyId(specialty.id)}
+                key={specialty.id ?? 'all'}
+                active={specialty.active}
+                label={specialty.label}
+                onPress={() => vm.handleSelectSpecialty(specialty.id)}
               />
             ))}
           </ScrollView>
@@ -94,22 +59,22 @@ function SearchDoctor() {
           </View>
 
           <View style={styles.doctorList}>
-            {doctorsQuery.isLoading ? (
+            {vm.loading ? (
               <Text style={styles.stateText}>Carregando médicos...</Text>
-            ) : doctorsQuery.isError ? (
-              <Text style={styles.stateText}>Não foi possível carregar os médicos.</Text>
-            ) : doctors.length === 0 ? (
+            ) : vm.error ? (
+              <Text style={styles.stateText}>{vm.error}</Text>
+            ) : vm.doctors.length === 0 ? (
               <Text style={styles.stateText}>Nenhum médico encontrado.</Text>
             ) : (
-              doctors.map((doctor, index) => (
+              vm.doctors.map((doctor) => (
                 <DoctorCard
                   key={doctor.id}
-                  availability={doctor.availableToday ? 'Disponível hoje' : 'Ver horários'}
-                  avatarVariant={getDoctorAvatarVariant(index)}
+                  availability={doctor.availability}
+                  avatarVariant={doctor.avatarVariant}
                   crm={doctor.crm}
                   name={doctor.name}
-                  onPress={() => handleSelectDoctor(doctor)}
-                  specialty={doctor.specialty.name}
+                  onPress={() => vm.handleSelectDoctor(doctor.id)}
+                  specialty={doctor.specialty}
                 />
               ))
             )}
@@ -120,4 +85,4 @@ function SearchDoctor() {
   )
 }
 
-export default SearchDoctor
+export default SearchDoctorScreen
