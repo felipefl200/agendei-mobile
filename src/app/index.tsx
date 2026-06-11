@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router'
-import Login from '@/screens/login/login'
+import LoginScreen from '@/features/auth/screens/LoginScreen'
 import { useAuthStore } from '@/store/useAuthStore'
 
 export default function HomeScreen() {
@@ -14,5 +14,5 @@ export default function HomeScreen() {
     return <Redirect href="/dashboard" />
   }
 
-  return <Login />
+  return <LoginScreen />
 }

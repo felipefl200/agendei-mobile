@@ -1,5 +1,4 @@
-import { Link, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { Link } from 'expo-router'
 import { Image, Pressable, Text, View } from 'react-native'
 import {
   KeyboardAwareScrollView,
@@ -9,55 +8,12 @@ import Button from '@/components/button/button'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
 import { COLORS } from '@/constants/theme'
-import { useRegister } from '@/hooks/useRegister'
-import { getAuthErrorMessage } from '@/utils/getAuthErrorMessage'
+import { useRegisterViewModel } from '@/features/auth/view-models/useRegisterViewModel'
 import logo from '@/assets/logo.png'
-import { styles } from './register.styles'
+import { styles } from './RegisterScreen.styles'
 
-function Register() {
-  const router = useRouter()
-  const registerMutation = useRegister()
-  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [formError, setFormError] = useState<string | null>(null)
-  const isSubmitting = registerMutation.isPending
-
-  async function handleRegister() {
-    if (!name.trim() || !email.trim() || !password) {
-      setFormError('Informe nome, e-mail e senha para criar sua conta.')
-      return
-    }
-
-    if (password !== passwordConfirmation) {
-      setFormError('As senhas não conferem.')
-      return
-    }
-
-    if (!hasAcceptedTerms) {
-      setFormError('Aceite os termos para continuar.')
-      return
-    }
-
-    setFormError(null)
-
-    try {
-      const digitsOnlyPhone = phone.replace(/\D/g, '')
-
-      await registerMutation.mutateAsync({
-        name,
-        email,
-        password,
-        ...(digitsOnlyPhone ? { phone: digitsOnlyPhone } : {}),
-      })
-      router.replace('/dashboard')
-    } catch (error) {
-      setFormError(getAuthErrorMessage(error))
-    }
-  }
+function RegisterScreen() {
+  const vm = useRegisterViewModel()
 
   return (
     <>
@@ -103,66 +59,66 @@ function Register() {
         <View style={styles.form}>
           <Input
             autoCapitalize="words"
-            editable={!isSubmitting}
+            editable={!vm.loading}
             leftIcon={<Icon color={COLORS.primaryDark} name="user" size="md" />}
-            onChangeText={setName}
+            onChangeText={vm.setName}
             placeholder="Nome completo"
             textContentType="name"
-            value={name}
+            value={vm.name}
           />
           <Input
             autoCapitalize="none"
             autoComplete="email"
-            editable={!isSubmitting}
+            editable={!vm.loading}
             keyboardType="email-address"
             leftIcon={<Icon color={COLORS.primaryDark} name="mail" size="md" />}
-            onChangeText={setEmail}
+            onChangeText={vm.setEmail}
             placeholder="E-mail"
             textContentType="emailAddress"
-            value={email}
+            value={vm.email}
           />
           <Input
-            editable={!isSubmitting}
+            editable={!vm.loading}
             keyboardType="phone-pad"
             leftIcon={<Icon color={COLORS.primaryDark} name="phone" size="md" />}
-            onChangeText={setPhone}
+            onChangeText={vm.setPhone}
             placeholder="Telefone"
             rightElement={<Text style={styles.phoneMask}>(11) 99999-9999</Text>}
             textContentType="telephoneNumber"
-            value={phone}
+            value={vm.phone}
           />
           <Input
-            editable={!isSubmitting}
+            editable={!vm.loading}
             leftIcon={<Icon color={COLORS.primaryDark} name="lockKeyhole" size="md" />}
-            onChangeText={setPassword}
+            onChangeText={vm.setPassword}
             placeholder="Senha"
             secureTextEntry
             textContentType="newPassword"
-            value={password}
+            value={vm.password}
           />
           <Input
-            editable={!isSubmitting}
+            editable={!vm.loading}
             leftIcon={<Icon color={COLORS.primaryDark} name="lockKeyhole" size="md" />}
-            onChangeText={setPasswordConfirmation}
-            onSubmitEditing={handleRegister}
+            onChangeText={vm.setPasswordConfirmation}
+            onSubmitEditing={vm.handleRegister}
             placeholder="Confirmar senha"
             returnKeyType="go"
             secureTextEntry
             textContentType="newPassword"
-            value={passwordConfirmation}
+            value={vm.passwordConfirmation}
           />
         </View>
 
         <Pressable
           accessibilityRole="checkbox"
-          accessibilityState={{ checked: hasAcceptedTerms }}
-          onPress={() => setHasAcceptedTerms((currentValue) => !currentValue)}
+          accessibilityState={{ checked: vm.hasAcceptedTerms }}
+          onPress={vm.toggleAcceptedTerms}
           style={styles.termsRow}
         >
           <View
-            style={[styles.checkbox, hasAcceptedTerms ? styles.checkboxChecked : null]}
+            style={[styles.checkbox, vm.hasAcceptedTerms ? styles.checkboxChecked : null]}
           >
-            {hasAcceptedTerms ? (
+            {vm.hasAcceptedTerms ? (
               <Icon color={COLORS.white} name="check" size="xs" strokeWidth={3} />
             ) : null}
           </View>
@@ -172,14 +128,14 @@ function Register() {
           </Text>
         </Pressable>
 
-        {formError ? <Text style={styles.formError}>{formError}</Text> : null}
+        {vm.error ? <Text style={styles.formError}>{vm.error}</Text> : null}
 
         <Button
-          disabled={!hasAcceptedTerms || isSubmitting}
-          onPress={handleRegister}
-          style={!hasAcceptedTerms || isSubmitting ? styles.buttonDisabled : null}
+          disabled={!vm.hasAcceptedTerms || vm.loading}
+          onPress={vm.handleRegister}
+          style={!vm.hasAcceptedTerms || vm.loading ? styles.buttonDisabled : null}
         >
-          {isSubmitting ? 'Criando conta...' : 'Criar conta'}
+          {vm.loading ? 'Criando conta...' : 'Criar conta'}
         </Button>
 
         <View style={styles.dividerRow}>
@@ -211,4 +167,4 @@ function Register() {
   )
 }
 
-export default Register
+export default RegisterScreen

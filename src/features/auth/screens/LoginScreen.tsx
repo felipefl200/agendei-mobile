@@ -1,42 +1,16 @@
-import { Link, useRouter } from 'expo-router'
-import { useState } from 'react'
+import { Link } from 'expo-router'
 import { Image, Text, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import Button from '@/components/button/button'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
 import { COLORS } from '@/constants/theme'
-import { useLogin } from '@/hooks/useLogin'
-import { getAuthErrorMessage } from '@/utils/getAuthErrorMessage'
+import { useLoginViewModel } from '@/features/auth/view-models/useLoginViewModel'
 import logo from '@/assets/logo.png'
-import { styles } from './login.style'
+import { styles } from './LoginScreen.styles'
 
-function Login() {
-  const router = useRouter()
-  const loginMutation = useLogin()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [formError, setFormError] = useState<string | null>(null)
-  const isSubmitting = loginMutation.isPending
-
-  async function handleLogin() {
-    if (!email.trim() || !password) {
-      setFormError('Informe e-mail e senha para entrar.')
-      return
-    }
-
-    setFormError(null)
-
-    try {
-      await loginMutation.mutateAsync({
-        email,
-        password,
-      })
-      router.replace('/dashboard')
-    } catch (error) {
-      setFormError(getAuthErrorMessage(error))
-    }
-  }
+function LoginScreen() {
+  const vm = useLoginViewModel()
 
   return (
     <KeyboardAwareScrollView
@@ -79,33 +53,33 @@ function Login() {
           <Input
             autoCapitalize="none"
             autoComplete="email"
-            editable={!isSubmitting}
+            editable={!vm.loading}
             keyboardType="email-address"
             leftIcon={<Icon color={COLORS.primaryDark} name="mail" size="md" />}
-            onChangeText={setEmail}
+            onChangeText={vm.setEmail}
             placeholder="seu@email.com"
             textContentType="emailAddress"
-            value={email}
+            value={vm.email}
           />
           <Input
-            editable={!isSubmitting}
+            editable={!vm.loading}
             leftIcon={<Icon color={COLORS.primaryDark} name="lockKeyhole" size="md" />}
-            onChangeText={setPassword}
-            onSubmitEditing={handleLogin}
+            onChangeText={vm.setPassword}
+            onSubmitEditing={vm.handleLogin}
             placeholder="Senha"
             returnKeyType="go"
             secureTextEntry
             textContentType="password"
-            value={password}
+            value={vm.password}
           />
-          {formError ? <Text style={styles.formError}>{formError}</Text> : null}
+          {vm.error ? <Text style={styles.formError}>{vm.error}</Text> : null}
           <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
           <Button
-            disabled={isSubmitting}
-            onPress={handleLogin}
-            style={isSubmitting ? styles.buttonDisabled : null}
+            disabled={vm.loading}
+            onPress={vm.handleLogin}
+            style={vm.loading ? styles.buttonDisabled : null}
           >
-            {isSubmitting ? 'Entrando...' : 'Entrar'}
+            {vm.loading ? 'Entrando...' : 'Entrar'}
           </Button>
         </View>
 
@@ -137,4 +111,4 @@ function Login() {
   )
 }
 
-export default Login
+export default LoginScreen

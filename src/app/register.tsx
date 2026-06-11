@@ -1,5 +1,5 @@
-import Register from '@/screens/register/register'
+import RegisterScreen from '@/features/auth/screens/RegisterScreen'
 
-export default function RegisterScreen() {
-  return <Register />
+export default function RegisterRoute() {
+  return <RegisterScreen />
 }
