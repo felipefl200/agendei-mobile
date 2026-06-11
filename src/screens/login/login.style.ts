@@ -141,6 +141,15 @@ export const styles = StyleSheet.create({
     fontSize: FONT_SIZE.xs,
     fontWeight: FONT_WEIGHT.semibold,
   },
+  formError: {
+    color: COLORS.danger,
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.medium,
+    lineHeight: 18,
+  },
+  buttonDisabled: {
+    opacity: 0.55,
+  },
   dividerRow: {
     alignItems: 'center',
     flexDirection: 'row',

@@ -1,15 +1,42 @@
 import { Link, useRouter } from 'expo-router'
+import { useState } from 'react'
 import { Image, Text, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import Button from '@/components/button/button'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
 import { COLORS } from '@/constants/theme'
+import { useLogin } from '@/hooks/useLogin'
+import { getAuthErrorMessage } from '@/utils/getAuthErrorMessage'
 import logo from '@/assets/logo.png'
 import { styles } from './login.style'
 
 function Login() {
   const router = useRouter()
+  const loginMutation = useLogin()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [formError, setFormError] = useState<string | null>(null)
+  const isSubmitting = loginMutation.isPending
+
+  async function handleLogin() {
+    if (!email.trim() || !password) {
+      setFormError('Informe e-mail e senha para entrar.')
+      return
+    }
+
+    setFormError(null)
+
+    try {
+      await loginMutation.mutateAsync({
+        email,
+        password,
+      })
+      router.replace('/dashboard')
+    } catch (error) {
+      setFormError(getAuthErrorMessage(error))
+    }
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -51,17 +78,35 @@ function Login() {
         <View style={styles.form}>
           <Input
             autoCapitalize="none"
+            autoComplete="email"
+            editable={!isSubmitting}
             keyboardType="email-address"
             leftIcon={<Icon color={COLORS.primaryDark} name="mail" size="md" />}
+            onChangeText={setEmail}
             placeholder="seu@email.com"
+            textContentType="emailAddress"
+            value={email}
           />
           <Input
+            editable={!isSubmitting}
             leftIcon={<Icon color={COLORS.primaryDark} name="lockKeyhole" size="md" />}
+            onChangeText={setPassword}
+            onSubmitEditing={handleLogin}
             placeholder="Senha"
+            returnKeyType="go"
             secureTextEntry
+            textContentType="password"
+            value={password}
           />
+          {formError ? <Text style={styles.formError}>{formError}</Text> : null}
           <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
-          <Button onPress={() => router.replace('/dashboard')}>Entrar</Button>
+          <Button
+            disabled={isSubmitting}
+            onPress={handleLogin}
+            style={isSubmitting ? styles.buttonDisabled : null}
+          >
+            {isSubmitting ? 'Entrando...' : 'Entrar'}
+          </Button>
         </View>
 
         <View style={styles.dividerRow}>

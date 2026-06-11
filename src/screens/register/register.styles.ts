@@ -194,6 +194,12 @@ export const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.55,
   },
+  formError: {
+    color: COLORS.danger,
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.medium,
+    lineHeight: 20,
+  },
   dividerRow: {
     alignItems: 'center',
     flexDirection: 'row',

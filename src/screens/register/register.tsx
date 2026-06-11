@@ -1,4 +1,4 @@
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Image, Pressable, Text, View } from 'react-native'
 import {
@@ -9,11 +9,55 @@ import Button from '@/components/button/button'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
 import { COLORS } from '@/constants/theme'
+import { useRegister } from '@/hooks/useRegister'
+import { getAuthErrorMessage } from '@/utils/getAuthErrorMessage'
 import logo from '@/assets/logo.png'
 import { styles } from './register.styles'
 
 function Register() {
+  const router = useRouter()
+  const registerMutation = useRegister()
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordConfirmation, setPasswordConfirmation] = useState('')
+  const [formError, setFormError] = useState<string | null>(null)
+  const isSubmitting = registerMutation.isPending
+
+  async function handleRegister() {
+    if (!name.trim() || !email.trim() || !password) {
+      setFormError('Informe nome, e-mail e senha para criar sua conta.')
+      return
+    }
+
+    if (password !== passwordConfirmation) {
+      setFormError('As senhas não conferem.')
+      return
+    }
+
+    if (!hasAcceptedTerms) {
+      setFormError('Aceite os termos para continuar.')
+      return
+    }
+
+    setFormError(null)
+
+    try {
+      const digitsOnlyPhone = phone.replace(/\D/g, '')
+
+      await registerMutation.mutateAsync({
+        name,
+        email,
+        password,
+        ...(digitsOnlyPhone ? { phone: digitsOnlyPhone } : {}),
+      })
+      router.replace('/dashboard')
+    } catch (error) {
+      setFormError(getAuthErrorMessage(error))
+    }
+  }
 
   return (
     <>
@@ -59,35 +103,53 @@ function Register() {
         <View style={styles.form}>
           <Input
             autoCapitalize="words"
+            editable={!isSubmitting}
             leftIcon={<Icon color={COLORS.primaryDark} name="user" size="md" />}
+            onChangeText={setName}
             placeholder="Nome completo"
             textContentType="name"
+            value={name}
           />
           <Input
             autoCapitalize="none"
+            autoComplete="email"
+            editable={!isSubmitting}
             keyboardType="email-address"
             leftIcon={<Icon color={COLORS.primaryDark} name="mail" size="md" />}
+            onChangeText={setEmail}
             placeholder="E-mail"
             textContentType="emailAddress"
+            value={email}
           />
           <Input
+            editable={!isSubmitting}
             keyboardType="phone-pad"
             leftIcon={<Icon color={COLORS.primaryDark} name="phone" size="md" />}
+            onChangeText={setPhone}
             placeholder="Telefone"
             rightElement={<Text style={styles.phoneMask}>(11) 99999-9999</Text>}
             textContentType="telephoneNumber"
+            value={phone}
           />
           <Input
+            editable={!isSubmitting}
             leftIcon={<Icon color={COLORS.primaryDark} name="lockKeyhole" size="md" />}
+            onChangeText={setPassword}
             placeholder="Senha"
             secureTextEntry
             textContentType="newPassword"
+            value={password}
           />
           <Input
+            editable={!isSubmitting}
             leftIcon={<Icon color={COLORS.primaryDark} name="lockKeyhole" size="md" />}
+            onChangeText={setPasswordConfirmation}
+            onSubmitEditing={handleRegister}
             placeholder="Confirmar senha"
+            returnKeyType="go"
             secureTextEntry
             textContentType="newPassword"
+            value={passwordConfirmation}
           />
         </View>
 
@@ -110,11 +172,14 @@ function Register() {
           </Text>
         </Pressable>
 
+        {formError ? <Text style={styles.formError}>{formError}</Text> : null}
+
         <Button
-          disabled={!hasAcceptedTerms}
-          style={!hasAcceptedTerms ? styles.buttonDisabled : null}
+          disabled={!hasAcceptedTerms || isSubmitting}
+          onPress={handleRegister}
+          style={!hasAcceptedTerms || isSubmitting ? styles.buttonDisabled : null}
         >
-          Criar conta
+          {isSubmitting ? 'Criando conta...' : 'Criar conta'}
         </Button>
 
         <View style={styles.dividerRow}>
