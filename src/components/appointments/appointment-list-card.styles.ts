@@ -59,4 +59,17 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 28,
   },
+  cancelButton: {
+    alignSelf: 'flex-start',
+    marginTop: SPACING[2],
+    paddingVertical: SPACING[1],
+  },
+  cancelButtonDisabled: {
+    opacity: 0.55,
+  },
+  cancelButtonText: {
+    color: COLORS.danger,
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.bold,
+  },
 })

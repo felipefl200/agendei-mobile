@@ -1,4 +1,8 @@
-import { AppointmentDetails } from '@/domain/entities/appointment'
+import {
+  AppointmentDetails,
+  AppointmentSummary,
+  CanceledAppointment,
+} from '@/domain/entities/appointment'
 
 interface CreateAppointmentInput {
   doctorId: string
@@ -8,8 +12,16 @@ interface CreateAppointmentInput {
   startTime: string
 }
 
-interface AppointmentsGateway {
-  create(input: CreateAppointmentInput): Promise<AppointmentDetails>
+interface CancelAppointmentInput {
+  appointmentId: string
+  reason: string
 }
 
-export type { AppointmentsGateway, CreateAppointmentInput }
+interface AppointmentsGateway {
+  cancel(input: CancelAppointmentInput): Promise<CanceledAppointment>
+  create(input: CreateAppointmentInput): Promise<AppointmentDetails>
+  getHistory(): Promise<AppointmentSummary[]>
+  getUpcoming(): Promise<AppointmentSummary[]>
+}
+
+export type { AppointmentsGateway, CancelAppointmentInput, CreateAppointmentInput }

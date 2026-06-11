@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import Icon from '@/components/icon/icon'
 import { COLORS } from '@/constants/theme'
 import AppointmentDateBadge from './appointment-date-badge'
@@ -14,6 +14,8 @@ interface AppointmentListCardProps {
   clinic: string
   status: AppointmentStatus
   variant?: 'future' | 'past'
+  isCanceling?: boolean
+  onCancel?: () => void
 }
 
 function AppointmentListCard({
@@ -25,6 +27,8 @@ function AppointmentListCard({
   clinic,
   status,
   variant = 'future',
+  isCanceling = false,
+  onCancel,
 }: AppointmentListCardProps) {
   return (
     <View style={styles.container}>
@@ -45,6 +49,18 @@ function AppointmentListCard({
         </View>
 
         <AppointmentStatusBadge status={status} />
+        {onCancel ? (
+          <Pressable
+            accessibilityRole="button"
+            disabled={isCanceling}
+            onPress={onCancel}
+            style={[styles.cancelButton, isCanceling ? styles.cancelButtonDisabled : null]}
+          >
+            <Text style={styles.cancelButtonText}>
+              {isCanceling ? 'Cancelando...' : 'Cancelar consulta'}
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
 
       <View style={styles.chevron}>

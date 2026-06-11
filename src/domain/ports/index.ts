@@ -1,4 +1,8 @@
-export type { AppointmentsGateway, CreateAppointmentInput } from './AppointmentsGateway'
+export type {
+  AppointmentsGateway,
+  CancelAppointmentInput,
+  CreateAppointmentInput,
+} from './AppointmentsGateway'
 export type {
   AuthGateway,
   AuthSession,

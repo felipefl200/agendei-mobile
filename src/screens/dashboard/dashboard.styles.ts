@@ -63,6 +63,11 @@ export const styles = StyleSheet.create({
   section: {
     marginTop: SPACING[6],
   },
+  stateText: {
+    color: COLORS.textSecondary,
+    fontSize: FONT_SIZE.sm,
+    lineHeight: 20,
+  },
   specialtiesGrid: {
     flexDirection: 'row',
     gap: SPACING[3],

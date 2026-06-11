@@ -185,6 +185,11 @@ const STATUS = {
     color: COLORS.danger,
     label: 'Cancelada',
   },
+  no_show: {
+    backgroundColor: COLORS.warningLight,
+    color: COLORS.warning,
+    label: 'Não compareceu',
+  },
 }
 
 export {

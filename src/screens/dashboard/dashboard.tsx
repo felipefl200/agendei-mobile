@@ -5,6 +5,9 @@ import FeatureTile from '@/components/dashboard/feature-tile'
 import SectionHeader from '@/components/dashboard/section-header'
 import Icon, { IconName } from '@/components/icon/icon'
 import { COLORS } from '@/constants/theme'
+import { useUpcomingAppointments } from '@/hooks/usePatientAppointments'
+import { useAuthStore } from '@/store/useAuthStore'
+import { getAppointmentDateParts } from '@/utils/appointmentPresentation'
 import { styles } from './dashboard.styles'
 
 const specialties: { title: string; icon: IconName; color: string }[] = [
@@ -22,6 +25,13 @@ const quickActions: { title: string; icon: IconName; color: string }[] = [
 ]
 
 function Dashboard() {
+  const user = useAuthStore((state) => state.user)
+  const upcomingAppointmentsQuery = useUpcomingAppointments()
+  const nextAppointment = upcomingAppointmentsQuery.data?.[0]
+  const nextAppointmentDateParts = nextAppointment
+    ? getAppointmentDateParts(nextAppointment.date)
+    : null
+
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.container}>
@@ -38,18 +48,24 @@ function Dashboard() {
           </View>
 
           <View style={styles.greeting}>
-            <Text style={styles.greetingTitle}>Olá, Ana! 👋</Text>
+            <Text style={styles.greetingTitle}>Olá, {user?.name ?? 'paciente'}!</Text>
             <Text style={styles.greetingSubtitle}>Como podemos cuidar de você hoje?</Text>
           </View>
 
-          <AppointmentCard
-            clinic="Clínica Saúde & Vida"
-            date="20 Mai"
-            doctorName="Dra. Juliana Martins"
-            specialty="Clínica Geral"
-            time="10:30"
-            weekday="Terça-feira"
-          />
+          {upcomingAppointmentsQuery.isLoading ? (
+            <Text style={styles.stateText}>Carregando próxima consulta...</Text>
+          ) : nextAppointment && nextAppointmentDateParts ? (
+            <AppointmentCard
+              clinic={nextAppointment.clinicName}
+              date={nextAppointmentDateParts.shortDate}
+              doctorName={nextAppointment.doctorName}
+              specialty={nextAppointment.specialtyName}
+              time={nextAppointment.startTime}
+              weekday={nextAppointmentDateParts.weekday}
+            />
+          ) : (
+            <Text style={styles.stateText}>Você ainda não tem consultas próximas.</Text>
+          )}
 
           <View style={styles.section}>
             <SectionHeader actionLabel="Ver todas" title="Especialidades" />
