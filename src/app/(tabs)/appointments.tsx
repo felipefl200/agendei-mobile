@@ -1,5 +1,5 @@
-import Appointments from '@/screens/appointments/appointments'
+import AppointmentsScreen from '@/features/appointments/screens/AppointmentsScreen'
 
 export default function AppointmentsTab() {
-  return <Appointments />
+  return <AppointmentsScreen />
 }

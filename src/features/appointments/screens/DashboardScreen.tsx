@@ -3,34 +3,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import AppointmentCard from '@/components/dashboard/appointment-card'
 import FeatureTile from '@/components/dashboard/feature-tile'
 import SectionHeader from '@/components/dashboard/section-header'
-import Icon, { IconName } from '@/components/icon/icon'
+import Icon from '@/components/icon/icon'
 import { COLORS } from '@/constants/theme'
-import { useUpcomingAppointments } from '@/hooks/usePatientAppointments'
-import { useAuthStore } from '@/store/useAuthStore'
-import { getAppointmentDateParts } from '@/utils/appointmentPresentation'
-import { styles } from './dashboard.styles'
+import { useDashboardViewModel } from '@/features/appointments/view-models/useDashboardViewModel'
+import { styles } from './DashboardScreen.styles'
 
-const specialties: { title: string; icon: IconName; color: string }[] = [
-  { title: 'Clínica Geral', icon: 'stethoscope', color: COLORS.primary },
-  { title: 'Pediatria', icon: 'baby', color: '#FFAA6B' },
-  { title: 'Ginecologia', icon: 'venus', color: '#A16EFF' },
-  { title: 'Cardiologia', icon: 'heartPulse', color: COLORS.accent },
-]
-
-const quickActions: { title: string; icon: IconName; color: string }[] = [
-  { title: 'Agendar', icon: 'calendarDays', color: COLORS.primary },
-  { title: 'Buscar médicos', icon: 'userSearch', color: COLORS.secondary },
-  { title: 'Exames e procedimentos', icon: 'flaskConical', color: '#7B61FF' },
-  { title: 'Convênios', icon: 'creditCard', color: COLORS.secondaryDark },
-]
-
-function Dashboard() {
-  const user = useAuthStore((state) => state.user)
-  const upcomingAppointmentsQuery = useUpcomingAppointments()
-  const nextAppointment = upcomingAppointmentsQuery.data?.[0]
-  const nextAppointmentDateParts = nextAppointment
-    ? getAppointmentDateParts(nextAppointment.date)
-    : null
+function DashboardScreen() {
+  const vm = useDashboardViewModel()
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -48,20 +27,20 @@ function Dashboard() {
           </View>
 
           <View style={styles.greeting}>
-            <Text style={styles.greetingTitle}>Olá, {user?.name ?? 'paciente'}!</Text>
+            <Text style={styles.greetingTitle}>Olá, {vm.userName}!</Text>
             <Text style={styles.greetingSubtitle}>Como podemos cuidar de você hoje?</Text>
           </View>
 
-          {upcomingAppointmentsQuery.isLoading ? (
+          {vm.nextAppointmentLoading ? (
             <Text style={styles.stateText}>Carregando próxima consulta...</Text>
-          ) : nextAppointment && nextAppointmentDateParts ? (
+          ) : vm.nextAppointment ? (
             <AppointmentCard
-              clinic={nextAppointment.clinicName}
-              date={nextAppointmentDateParts.shortDate}
-              doctorName={nextAppointment.doctorName}
-              specialty={nextAppointment.specialtyName}
-              time={nextAppointment.startTime}
-              weekday={nextAppointmentDateParts.weekday}
+              clinic={vm.nextAppointment.clinic}
+              date={vm.nextAppointment.date}
+              doctorName={vm.nextAppointment.doctorName}
+              specialty={vm.nextAppointment.specialty}
+              time={vm.nextAppointment.time}
+              weekday={vm.nextAppointment.weekday}
             />
           ) : (
             <Text style={styles.stateText}>Você ainda não tem consultas próximas.</Text>
@@ -70,7 +49,7 @@ function Dashboard() {
           <View style={styles.section}>
             <SectionHeader actionLabel="Ver todas" title="Especialidades" />
             <View style={styles.specialtiesGrid}>
-              {specialties.map((specialty) => (
+              {vm.specialties.map((specialty) => (
                 <FeatureTile
                   key={specialty.title}
                   color={specialty.color}
@@ -84,7 +63,7 @@ function Dashboard() {
           <View style={styles.section}>
             <SectionHeader title="Ações rápidas" />
             <View style={styles.quickActionsGrid}>
-              {quickActions.map((action) => (
+              {vm.quickActions.map((action) => (
                 <FeatureTile
                   key={action.title}
                   color={action.color}
@@ -102,4 +81,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard
+export default DashboardScreen

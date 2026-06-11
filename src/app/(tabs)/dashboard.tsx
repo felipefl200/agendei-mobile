@@ -1,5 +1,5 @@
-import Dashboard from '@/screens/dashboard/dashboard'
+import DashboardScreen from '@/features/appointments/screens/DashboardScreen'
 
 export default function DashboardTab() {
-  return <Dashboard />
+  return <DashboardScreen />
 }
