@@ -1,0 +1,5 @@
+export type { Appointment, AppointmentDetails, AppointmentStatus, AppointmentSummary } from './appointment'
+export type { Doctor, DoctorClinic } from './doctor'
+export type { Patient } from './patient'
+export type { Specialty, SpecialtySummary } from './specialty'
+export type { User, UserRole } from './user'
