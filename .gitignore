@@ -3,6 +3,9 @@
 # dependencies
 node_modules/
 
+# docs not necessary for git
+/docs
+
 # Expo
 .expo/
 dist/

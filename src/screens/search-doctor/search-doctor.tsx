@@ -1,6 +1,5 @@
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import BottomNavigation, { BottomNavigationItem } from '@/components/dashboard/bottom-navigation'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
 import DoctorCard from '@/components/search-doctor/doctor-card'
@@ -53,14 +52,6 @@ const doctors: {
   },
 ]
 
-const bottomNavigationItems: BottomNavigationItem[] = [
-  { key: 'home', label: 'Início', icon: 'home' },
-  { key: 'search', label: 'Buscar', icon: 'search' },
-  { key: 'appointments', label: 'Consultas', icon: 'calendarDays' },
-  { key: 'messages', label: 'Mensagens', icon: 'messageCircle' },
-  { key: 'profile', label: 'Perfil', icon: 'user' },
-]
-
 function SearchDoctor() {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -108,8 +99,6 @@ function SearchDoctor() {
             ))}
           </View>
         </ScrollView>
-
-        <BottomNavigation activeKey="search" items={bottomNavigationItems} />
       </View>
     </SafeAreaView>
   )

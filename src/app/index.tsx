@@ -1,6 +1,5 @@
-import Appointments from '@/screens/appointments/appointments'
-import Booking from '@/screens/booking/booking'
+import Login from '@/screens/login/login'
 
 export default function HomeScreen() {
-  return <Appointments />
+  return <Login />
 }

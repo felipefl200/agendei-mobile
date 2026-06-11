@@ -5,9 +5,6 @@ import AppointmentListCard, {
   AppointmentListCardProps,
 } from '@/components/appointments/appointment-list-card'
 import AppointmentsTabs, { AppointmentTab } from '@/components/appointments/appointments-tabs'
-import BottomNavigation, { BottomNavigationItem } from '@/components/dashboard/bottom-navigation'
-import Icon from '@/components/icon/icon'
-import { COLORS } from '@/constants/theme'
 import { styles } from './appointments.styles'
 
 const upcomingAppointments: AppointmentListCardProps[] = [
@@ -53,14 +50,6 @@ const historyAppointments: AppointmentListCardProps[] = [
   },
 ]
 
-const bottomNavigationItems: BottomNavigationItem[] = [
-  { key: 'home', label: 'Início', icon: 'home' },
-  { key: 'search', label: 'Buscar', icon: 'search' },
-  { key: 'appointments', label: 'Consultas', icon: 'calendarDays' },
-  { key: 'messages', label: 'Mensagens', icon: 'messageCircle' },
-  { key: 'profile', label: 'Perfil', icon: 'user' },
-]
-
 function Appointments() {
   const [activeTab, setActiveTab] = useState<AppointmentTab>('upcoming')
   const appointments = activeTab === 'upcoming' ? upcomingAppointments : historyAppointments
@@ -73,9 +62,7 @@ function Appointments() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <View style={styles.menuButton}>
-              <Icon color={COLORS.primaryDark} name="menu" size="md" />
-            </View>
+            <View style={styles.menuButton} />
             <Text style={styles.headerTitle}>Minhas consultas</Text>
             <View style={styles.headerSpacer} />
           </View>
@@ -97,8 +84,6 @@ function Appointments() {
             </View>
           </View>
         </ScrollView>
-
-        <BottomNavigation activeKey="appointments" items={bottomNavigationItems} />
       </View>
     </SafeAreaView>
   )

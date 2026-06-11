@@ -1,7 +1,6 @@
 import { ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AppointmentCard from '@/components/dashboard/appointment-card'
-import BottomNavigation, { BottomNavigationItem } from '@/components/dashboard/bottom-navigation'
 import FeatureTile from '@/components/dashboard/feature-tile'
 import SectionHeader from '@/components/dashboard/section-header'
 import Icon, { IconName } from '@/components/icon/icon'
@@ -22,14 +21,6 @@ const quickActions: { title: string; icon: IconName; color: string }[] = [
   { title: 'Convênios', icon: 'creditCard', color: COLORS.secondaryDark },
 ]
 
-const bottomNavigationItems: BottomNavigationItem[] = [
-  { key: 'home', label: 'Início', icon: 'home' },
-  { key: 'search', label: 'Buscar', icon: 'search' },
-  { key: 'appointments', label: 'Consultas', icon: 'calendarDays' },
-  { key: 'messages', label: 'Mensagens', icon: 'messageCircle' },
-  { key: 'profile', label: 'Perfil', icon: 'user' },
-]
-
 function Dashboard() {
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -39,9 +30,7 @@ function Dashboard() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <View style={styles.iconButton}>
-              <Icon color={COLORS.primaryDark} name="menu" size="md" />
-            </View>
+            <View style={styles.iconButton} />
             <View style={styles.notificationButton}>
               <Icon color={COLORS.primaryDark} name="bell" size="md" />
               <View style={styles.notificationDot} />
@@ -92,8 +81,6 @@ function Dashboard() {
             </View>
           </View>
         </ScrollView>
-
-        <BottomNavigation activeKey="home" items={bottomNavigationItems} />
       </View>
     </SafeAreaView>
   )

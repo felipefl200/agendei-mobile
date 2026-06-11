@@ -1,4 +1,4 @@
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { Image, Text, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import Button from '@/components/button/button'
@@ -9,6 +9,8 @@ import logo from '@/assets/logo.png'
 import { styles } from './login.style'
 
 function Login() {
+  const router = useRouter()
+
   return (
     <KeyboardAwareScrollView
       bottomOffset={20}
@@ -59,7 +61,7 @@ function Login() {
             secureTextEntry
           />
           <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
-          <Button>Entrar</Button>
+          <Button onPress={() => router.replace('/dashboard')}>Entrar</Button>
         </View>
 
         <View style={styles.dividerRow}>
