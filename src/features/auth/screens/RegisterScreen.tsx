@@ -1,5 +1,6 @@
 import { Link } from 'expo-router'
 import { Image, Pressable, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   KeyboardAwareScrollView,
   KeyboardToolbar,
@@ -16,7 +17,7 @@ function RegisterScreen() {
   const vm = useRegisterViewModel()
 
   return (
-    <>
+    <SafeAreaView edges={['top', 'bottom']} style={styles.container}>
       <KeyboardAwareScrollView
         bottomOffset={62}
         bounces={false}
@@ -163,7 +164,7 @@ function RegisterScreen() {
         </Text>
       </KeyboardAwareScrollView>
       <KeyboardToolbar />
-    </>
+    </SafeAreaView>
   )
 }
 
