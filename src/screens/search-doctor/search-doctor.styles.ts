@@ -55,4 +55,9 @@ export const styles = StyleSheet.create({
   doctorList: {
     gap: SPACING[4],
   },
+  stateText: {
+    color: COLORS.textSecondary,
+    fontSize: FONT_SIZE.sm,
+    lineHeight: 20,
+  },
 })

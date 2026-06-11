@@ -1,0 +1,1 @@
+export { ListSpecialtiesUseCase } from './ListSpecialtiesUseCase'

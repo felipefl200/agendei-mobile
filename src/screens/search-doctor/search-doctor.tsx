@@ -1,3 +1,5 @@
+import { useRouter } from 'expo-router'
+import { useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from '@/components/icon/icon'
@@ -6,53 +8,39 @@ import DoctorCard from '@/components/search-doctor/doctor-card'
 import { DoctorAvatarVariant } from '@/components/search-doctor/doctor-avatar'
 import FilterChip from '@/components/search-doctor/filter-chip'
 import { COLORS } from '@/constants/theme'
+import { Doctor } from '@/domain/entities/doctor'
+import { useDoctors } from '@/hooks/useDoctors'
+import { useSpecialties } from '@/hooks/useSpecialties'
 import { styles } from './search-doctor.styles'
 
-const filters = ['Todos', 'Clínica Geral', 'Pediatria', 'Ginecologia']
+const avatarVariants: DoctorAvatarVariant[] = ['femaleA', 'maleA', 'femaleB', 'femaleC']
 
-const doctors: {
-  name: string
-  specialty: string
-  rating: string
-  reviews: number
-  availability: string
-  avatarVariant: DoctorAvatarVariant
-}[] = [
-  {
-    name: 'Dra. Juliana Martins',
-    specialty: 'Clínica Geral',
-    rating: '4,9',
-    reviews: 128,
-    availability: 'Disponível hoje',
-    avatarVariant: 'femaleA',
-  },
-  {
-    name: 'Dr. Rafael Souza',
-    specialty: 'Cardiologia',
-    rating: '4,8',
-    reviews: 96,
-    availability: 'Disponível amanhã',
-    avatarVariant: 'maleA',
-  },
-  {
-    name: 'Dra. Camila Lemos',
-    specialty: 'Pediatria',
-    rating: '4,9',
-    reviews: 210,
-    availability: 'Disponível hoje',
-    avatarVariant: 'femaleB',
-  },
-  {
-    name: 'Dra. Beatriz Nunes',
-    specialty: 'Ginecologia',
-    rating: '4,7',
-    reviews: 87,
-    availability: 'Disponível sexta',
-    avatarVariant: 'femaleC',
-  },
-]
+function getDoctorAvatarVariant(index: number) {
+  return avatarVariants[index % avatarVariants.length]
+}
 
 function SearchDoctor() {
+  const router = useRouter()
+  const [search, setSearch] = useState('')
+  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | undefined>()
+  const specialtiesQuery = useSpecialties()
+  const doctorsQuery = useDoctors({
+    page: 1,
+    perPage: 20,
+    search,
+    specialtyId: selectedSpecialtyId,
+  })
+  const doctors = doctorsQuery.data?.doctors ?? []
+
+  function handleSelectDoctor(doctor: Doctor) {
+    router.push({
+      pathname: '/booking',
+      params: {
+        doctorId: doctor.id,
+      },
+    })
+  }
+
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <View style={styles.container}>
@@ -71,7 +59,9 @@ function SearchDoctor() {
               fieldStyle={styles.searchInputField}
               inputStyle={styles.searchInput}
               leftIcon={<Icon color={COLORS.textMuted} name="search" size="sm" />}
+              onChangeText={setSearch}
               placeholder="Buscar médicos ou especialidades"
+              value={search}
             />
 
             <View style={styles.iconButton}>
@@ -84,8 +74,18 @@ function SearchDoctor() {
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            {filters.map((filter, index) => (
-              <FilterChip key={filter} active={index === 0} label={filter} />
+            <FilterChip
+              active={!selectedSpecialtyId}
+              label="Todos"
+              onPress={() => setSelectedSpecialtyId(undefined)}
+            />
+            {(specialtiesQuery.data ?? []).map((specialty) => (
+              <FilterChip
+                key={specialty.id}
+                active={selectedSpecialtyId === specialty.id}
+                label={specialty.name}
+                onPress={() => setSelectedSpecialtyId(specialty.id)}
+              />
             ))}
           </ScrollView>
 
@@ -94,9 +94,25 @@ function SearchDoctor() {
           </View>
 
           <View style={styles.doctorList}>
-            {doctors.map((doctor) => (
-              <DoctorCard key={doctor.name} {...doctor} />
-            ))}
+            {doctorsQuery.isLoading ? (
+              <Text style={styles.stateText}>Carregando médicos...</Text>
+            ) : doctorsQuery.isError ? (
+              <Text style={styles.stateText}>Não foi possível carregar os médicos.</Text>
+            ) : doctors.length === 0 ? (
+              <Text style={styles.stateText}>Nenhum médico encontrado.</Text>
+            ) : (
+              doctors.map((doctor, index) => (
+                <DoctorCard
+                  key={doctor.id}
+                  availability={doctor.availableToday ? 'Disponível hoje' : 'Ver horários'}
+                  avatarVariant={getDoctorAvatarVariant(index)}
+                  crm={doctor.crm}
+                  name={doctor.name}
+                  onPress={() => handleSelectDoctor(doctor)}
+                  specialty={doctor.specialty.name}
+                />
+              ))
+            )}
           </View>
         </ScrollView>
       </View>

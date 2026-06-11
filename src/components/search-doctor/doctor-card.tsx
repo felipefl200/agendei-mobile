@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import Icon from '@/components/icon/icon'
 import { COLORS } from '@/constants/theme'
 import DoctorAvatar, { DoctorAvatarVariant } from './doctor-avatar'
@@ -7,10 +7,12 @@ import { styles } from './doctor-card.styles'
 interface DoctorCardProps {
   name: string
   specialty: string
-  rating: string
-  reviews: number
+  rating?: string
+  reviews?: number
+  crm?: string
   availability: string
   avatarVariant?: DoctorAvatarVariant
+  onPress?: () => void
 }
 
 function DoctorCard({
@@ -18,11 +20,13 @@ function DoctorCard({
   specialty,
   rating,
   reviews,
+  crm,
   availability,
   avatarVariant,
+  onPress,
 }: DoctorCardProps) {
   return (
-    <View style={styles.container}>
+    <Pressable accessibilityRole="button" onPress={onPress} style={styles.container}>
       <DoctorAvatar variant={avatarVariant} />
 
       <View style={styles.content}>
@@ -31,11 +35,15 @@ function DoctorCard({
         </Text>
         <Text style={styles.specialty}>{specialty}</Text>
 
-        <View style={styles.ratingRow}>
-          <Icon color={COLORS.warning} fill={COLORS.warning} name="star" size="xs" />
-          <Text style={styles.rating}>{rating}</Text>
-          <Text style={styles.reviews}>({reviews} avaliações)</Text>
-        </View>
+        {rating && typeof reviews === 'number' ? (
+          <View style={styles.ratingRow}>
+            <Icon color={COLORS.warning} fill={COLORS.warning} name="star" size="xs" />
+            <Text style={styles.rating}>{rating}</Text>
+            <Text style={styles.reviews}>({reviews} avaliações)</Text>
+          </View>
+        ) : crm ? (
+          <Text style={styles.reviews}>CRM {crm}</Text>
+        ) : null}
 
         <Text style={styles.availability}>{availability}</Text>
       </View>
@@ -43,7 +51,7 @@ function DoctorCard({
       <View style={styles.favoriteButton}>
         <Icon color={COLORS.icon} name="heart" size="md" />
       </View>
-    </View>
+    </Pressable>
   )
 }
 

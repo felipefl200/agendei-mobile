@@ -7,8 +7,8 @@ import { styles } from './booking-doctor-summary.styles'
 interface BookingDoctorSummaryProps {
   name: string
   specialty: string
-  rating: string
-  reviews: number
+  rating?: string
+  reviews?: number
   clinic: string
 }
 
@@ -27,11 +27,13 @@ function BookingDoctorSummary({
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.specialty}>{specialty}</Text>
 
-        <View style={styles.infoRow}>
-          <Icon color={COLORS.warning} fill={COLORS.warning} name="star" size="xs" />
-          <Text style={styles.rating}>{rating}</Text>
-          <Text style={styles.muted}>({reviews} avaliações)</Text>
-        </View>
+        {rating && typeof reviews === 'number' ? (
+          <View style={styles.infoRow}>
+            <Icon color={COLORS.warning} fill={COLORS.warning} name="star" size="xs" />
+            <Text style={styles.rating}>{rating}</Text>
+            <Text style={styles.muted}>({reviews} avaliações)</Text>
+          </View>
+        ) : null}
 
         <View style={styles.infoRow}>
           <Icon color={COLORS.primary} name="mapPin" size="xs" />

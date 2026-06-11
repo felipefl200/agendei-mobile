@@ -49,4 +49,28 @@ export const styles = StyleSheet.create({
     marginBottom: SPACING[5],
     marginTop: SPACING[8],
   },
+  buttonDisabled: {
+    opacity: 0.55,
+  },
+  emptyState: {
+    gap: SPACING[4],
+    marginTop: SPACING[8],
+  },
+  emptyTitle: {
+    color: COLORS.textPrimary,
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.extrabold,
+  },
+  formError: {
+    color: COLORS.danger,
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.medium,
+    lineHeight: 20,
+    marginTop: SPACING[4],
+  },
+  stateText: {
+    color: COLORS.textSecondary,
+    fontSize: FONT_SIZE.sm,
+    lineHeight: 20,
+  },
 })

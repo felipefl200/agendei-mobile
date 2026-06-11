@@ -1,3 +1,4 @@
+export type { AvailableSlot, DoctorAvailability } from './availability'
 export type { Appointment, AppointmentDetails, AppointmentStatus, AppointmentSummary } from './appointment'
 export type { Doctor, DoctorClinic } from './doctor'
 export type { Patient } from './patient'
