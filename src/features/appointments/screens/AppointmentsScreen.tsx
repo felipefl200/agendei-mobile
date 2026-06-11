@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native'
+import { Alert, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AppointmentListCard from '@/components/appointments/appointment-list-card'
 import AppointmentsTabs from '@/components/appointments/appointments-tabs'
@@ -7,6 +7,30 @@ import { styles } from './AppointmentsScreen.styles'
 
 function AppointmentsScreen() {
   const vm = useAppointmentsViewModel()
+
+  function handleCancel(appointmentId: string) {
+    Alert.alert(
+      'Cancelar consulta',
+      'Tem certeza que deseja cancelar esta consulta?',
+      [
+        {
+          text: 'Manter',
+          style: 'cancel',
+        },
+        {
+          text: 'Cancelar consulta',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await vm.cancelAppointment(appointmentId)
+            } catch (error) {
+              Alert.alert('Não foi possível cancelar', error instanceof Error ? error.message : 'Erro desconhecido')
+            }
+          },
+        },
+      ],
+    )
+  }
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -44,7 +68,7 @@ function AppointmentsScreen() {
                     month={appointment.month}
                     onCancel={
                       vm.activeTab === 'upcoming'
-                        ? () => vm.handleCancel(appointment.id)
+                        ? () => handleCancel(appointment.id)
                         : undefined
                     }
                     specialty={appointment.specialty}

@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { DoctorAvatarVariant } from '@/components/search-doctor/doctor-avatar'
-import { useDoctors } from '@/hooks/useDoctors'
-import { useSpecialties } from '@/hooks/useSpecialties'
+import { useDoctors } from '@/features/shared/hooks/useDoctors'
+import { useSpecialties } from '@/features/shared/hooks/useSpecialties'
 
 interface SearchDoctorSpecialtyFilter {
   id: string | null

@@ -32,7 +32,7 @@ Features iniciais:
 - Tipo de retorno: interface `[NomeDaTela]ViewModel`.
 - Todo ViewModel deve ter um comentário JSDoc no topo explicando sua responsabilidade.
 
-Exemplo:
+Exemplo ViewModel (`useLoginViewModel.ts`):
 
 ```ts
 /**
@@ -41,11 +41,7 @@ Exemplo:
  */
 interface LoginViewModel {
   email: string
-  password: string
-  loading: boolean
-  error: string | null
-  setEmail: (value: string) => void
-  setPassword: (value: string) => void
+  // ...
   handleLogin: () => Promise<void>
 }
 
@@ -54,10 +50,28 @@ function useLoginViewModel(): LoginViewModel {
 }
 ```
 
+Exemplo View (`LoginScreen.tsx`):
+
+```tsx
+import { useLoginViewModel } from '../view-models/useLoginViewModel'
+
+export default function LoginScreen() {
+  const vm = useLoginViewModel()
+
+  return (
+    <View>
+      <TextInput value={vm.email} onChangeText={vm.setEmail} />
+      <Button onPress={vm.handleLogin} title="Login" />
+    </View>
+  )
+}
+```
+
 ## Regras de Migração
 
 - `src/app` deve continuar contendo apenas rotas e imports das screens.
-- Screens não devem chamar API, use cases ou React Query diretamente.
+- **Regra de Ouro da View**: Screens não devem chamar API, use cases ou React Query diretamente. Toda lógica de negócio reside no ViewModel.
+- **Regra de Ouro do ViewModel**: ViewModel NÃO pode importar componentes do React Native (`View`, `Text`, `StyleSheet`, `Alert`, etc.). Ele é apenas estado e lógica UI-agnóstica.
 - ViewModels podem compor hooks de dados e controlar estado específico da tela.
 - Use cases não devem importar React, React Query, Zustand ou bibliotecas de UI.
-- `src/hooks` permanece temporariamente durante a migração e será removido no épico final.
+- `src/hooks` foi descontinuado. Hooks globais residem em `features/shared/hooks/` ou dentro de `features/[feature]/hooks/`.

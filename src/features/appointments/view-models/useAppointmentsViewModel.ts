@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Alert } from 'react-native'
 import { AppointmentTab } from '@/components/appointments/appointments-tabs'
 import { AppointmentStatus } from '@/components/appointments/appointment-status-badge'
 import {
@@ -38,7 +37,7 @@ interface AppointmentsViewModel {
   refreshing: boolean
   error: string | null
   setActiveTab: (tab: AppointmentTab) => void
-  handleCancel: (appointmentId: string) => void
+  cancelAppointment: (appointmentId: string) => Promise<void>
   handleRefresh: () => Promise<void>
 }
 
@@ -75,34 +74,15 @@ function useAppointmentsViewModel(): AppointmentsViewModel {
     variant: appointmentVariant,
   }))
 
-  function cancelAppointment(appointmentId: string) {
+  async function cancelAppointment(appointmentId: string) {
     setCancelingAppointmentId(appointmentId)
-    cancelAppointmentMutation.mutate(appointmentId, {
-      onError: (error) => {
-        Alert.alert('Não foi possível cancelar', getCancelAppointmentErrorMessage(error))
-      },
-      onSettled: () => {
-        setCancelingAppointmentId(null)
-      },
-    })
-  }
-
-  function handleCancel(appointmentId: string) {
-    Alert.alert(
-      'Cancelar consulta',
-      'Tem certeza que deseja cancelar esta consulta?',
-      [
-        {
-          text: 'Manter',
-          style: 'cancel',
-        },
-        {
-          text: 'Cancelar consulta',
-          style: 'destructive',
-          onPress: () => cancelAppointment(appointmentId),
-        },
-      ],
-    )
+    try {
+      await cancelAppointmentMutation.mutateAsync(appointmentId)
+    } catch (error) {
+      throw new Error(getCancelAppointmentErrorMessage(error))
+    } finally {
+      setCancelingAppointmentId(null)
+    }
   }
 
   async function handleRefresh() {
@@ -120,7 +100,7 @@ function useAppointmentsViewModel(): AppointmentsViewModel {
     refreshing: activeQuery.isFetching && !activeQuery.isLoading,
     error: activeQuery.isError ? 'Não foi possível carregar suas consultas.' : null,
     setActiveTab,
-    handleCancel,
+    cancelAppointment,
     handleRefresh,
   }
 }
