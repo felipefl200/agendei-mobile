@@ -1,5 +1,5 @@
-import Booking from '@/screens/booking/booking'
+import BookingScreen from '@/features/booking/screens/BookingScreen'
 
 export default function BookingTab() {
-  return <Booking />
+  return <BookingScreen />
 }
