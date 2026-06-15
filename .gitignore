@@ -8,6 +8,7 @@ node_modules/
 
 # Expo
 .expo/
+coverage/
 dist/
 web-build/
 expo-env.d.ts
@@ -42,3 +43,4 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+resultado_atualizado.txt

@@ -5,6 +5,7 @@ import { getAppointmentDateParts } from '@/utils/appointmentPresentation'
 import { getUpcomingAppointmentsUseCase } from '@/infra/factories/appointmentsUseCases'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'expo-router'
 
 interface DashboardFeatureItem {
   title: string
@@ -31,6 +32,7 @@ interface DashboardViewModel {
   nextAppointmentLoading: boolean
   specialties: DashboardFeatureItem[]
   quickActions: DashboardFeatureItem[]
+  handleSeeAllSpecialties: () => void
 }
 
 const specialties: DashboardFeatureItem[] = [
@@ -48,6 +50,7 @@ const quickActions: DashboardFeatureItem[] = [
 ]
 
 function useDashboardViewModel(): DashboardViewModel {
+  const router = useRouter()
   const user = useAuthStore((state) => state.user)
   const upcomingAppointmentsQuery = useQuery({
     queryKey: queryKeys.appointments.upcoming(),
@@ -74,6 +77,7 @@ function useDashboardViewModel(): DashboardViewModel {
     nextAppointmentLoading: upcomingAppointmentsQuery.isLoading,
     specialties,
     quickActions,
+    handleSeeAllSpecialties: () => router.push('/search'),
   }
 }
 

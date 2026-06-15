@@ -70,12 +70,12 @@ export const styles = StyleSheet.create({
   },
   specialtiesGrid: {
     flexDirection: 'row',
-    gap: SPACING[3],
+    gap: SPACING[2],
   },
   quickActionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: SPACING[3],
+    gap: SPACING[2],
   },
   quickActionTile: {
     flexBasis: '48%',

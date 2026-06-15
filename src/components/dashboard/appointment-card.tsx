@@ -1,5 +1,6 @@
 import { Text, View } from 'react-native'
 import Icon from '@/components/icon/icon'
+import DoctorAvatar from '@/components/search-doctor/doctor-avatar'
 import { COLORS } from '@/constants/theme'
 import { styles } from './appointment-card.styles'
 
@@ -10,18 +11,6 @@ interface AppointmentCardProps {
   weekday: string
   time: string
   clinic: string
-}
-
-function DoctorAvatar() {
-  return (
-    <View style={styles.avatar}>
-      <View style={styles.avatarHair} />
-      <View style={styles.avatarFace} />
-      <View style={styles.avatarCoat}>
-        <Icon color={COLORS.primary} name="stethoscope" size="sm" />
-      </View>
-    </View>
-  )
 }
 
 function AppointmentCard({

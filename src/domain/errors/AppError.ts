@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 type AppErrorIssuePath = (string | number)[]
 
 interface AppErrorIssue {
@@ -45,5 +47,18 @@ class AppError extends Error {
   }
 }
 
+const appErrorIssueSchema = z.object({
+  code: z.string(),
+  path: z.array(z.union([z.string(), z.number()])),
+  message: z.string(),
+})
+
+const appErrorPayloadSchema = z.object({
+  statusCode: z.number().optional(),
+  error: z.string().optional(),
+  message: z.string().optional(),
+  issues: z.array(appErrorIssueSchema).optional(),
+})
+
 export type { AppErrorIssue, AppErrorIssuePath, AppErrorPayload }
-export { AppError }
+export { AppError, appErrorPayloadSchema }

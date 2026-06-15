@@ -1,0 +1,95 @@
+import React, { forwardRef } from 'react'
+
+type AnyProps = Record<string, any>
+
+function mapPressableProps({
+  accessibilityLabel,
+  accessibilityRole,
+  activeOpacity,
+  hitSlop,
+  onPress,
+  style,
+  ...props
+}: AnyProps) {
+  return {
+    ...props,
+    'aria-label': accessibilityLabel,
+    'data-role': accessibilityRole,
+    onClick: onPress,
+  }
+}
+
+const View = forwardRef<HTMLDivElement, AnyProps>(({ style, ...props }, ref) => (
+  <div ref={ref} {...props} />
+))
+View.displayName = 'View'
+
+const Text = forwardRef<HTMLSpanElement, AnyProps>(({ numberOfLines, style, ...props }, ref) => (
+  <span ref={ref} {...props} />
+))
+Text.displayName = 'Text'
+
+const Pressable = forwardRef<HTMLButtonElement, AnyProps>((props, ref) => (
+  <button ref={ref} type="button" {...mapPressableProps(props)} />
+))
+Pressable.displayName = 'Pressable'
+
+const TouchableOpacity = Pressable
+
+const TextInput = forwardRef<HTMLInputElement, AnyProps>(
+  (
+    {
+      editable = true,
+      onBlur,
+      onChange,
+      onChangeText,
+      onFocus,
+      placeholderTextColor,
+      secureTextEntry,
+      style,
+      hitSlop,
+      ...props
+    },
+    ref,
+  ) => (
+    <input
+      ref={ref}
+      disabled={!editable}
+      onBlur={onBlur}
+      onChange={(event) => {
+        onChange?.(event)
+        onChangeText?.(event.currentTarget.value)
+      }}
+      onFocus={onFocus}
+      type={secureTextEntry ? 'password' : 'text'}
+      {...props}
+    />
+  ),
+)
+TextInput.displayName = 'TextInput'
+
+const StyleSheet = {
+  create: <T extends Record<string, unknown>>(styles: T) => styles,
+  flatten: (style: unknown) => style,
+}
+
+const Platform = {
+  OS: 'ios',
+  select: <T,>(values: { default?: T; ios?: T; android?: T; web?: T }) =>
+    values.ios ?? values.default,
+}
+
+const Alert = {
+  alert: () => undefined,
+}
+
+export {
+  Alert,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+}

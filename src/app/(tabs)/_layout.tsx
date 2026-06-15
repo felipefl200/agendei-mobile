@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router'
-import type { ColorValue } from 'react-native'
+import { Platform, type ColorValue } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Icon, { IconName } from '@/components/icon/icon'
 import { COLORS, FONT_SIZE, FONT_WEIGHT, SPACING } from '@/constants/theme'
 
@@ -12,6 +13,10 @@ function tabIcon(name: IconName) {
 }
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets()
+  const bottomPadding = Platform.OS === 'ios' ? Math.max(insets.bottom, SPACING[2]) : SPACING[1]
+  const tabBarHeight = Platform.OS === 'ios' ? 64 + bottomPadding : 64
+
   return (
     <Tabs
       initialRouteName="dashboard"
@@ -23,12 +28,13 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: FONT_SIZE.xxs,
           fontWeight: FONT_WEIGHT.bold,
+          lineHeight: 14,
         },
         tabBarStyle: {
           backgroundColor: COLORS.surface,
           borderTopColor: COLORS.borderSoft,
-          height: 74,
-          paddingBottom: SPACING[2],
+          height: tabBarHeight,
+          paddingBottom: bottomPadding,
           paddingTop: SPACING[2],
         },
       }}

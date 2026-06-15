@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-native'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
@@ -6,8 +6,19 @@ import { useRegisterViewModel } from './useRegisterViewModel'
 import { registerUseCase } from '@/infra/factories/authUseCases'
 
 // Mock dependencies
-vi.mock('expo-router', () => ({
-  useRouter: () => ({ replace: vi.fn() })
+vi.mock(
+  'expo-router',
+  () => ({
+    useRouter: () => ({ replace: vi.fn() }),
+  }),
+  { virtual: true },
+)
+
+vi.mock('@/store/useAuthStore', () => ({
+  useAuthStore: (selector) =>
+    selector({
+      signIn: vi.fn(),
+    }),
 }))
 
 vi.mock('@/infra/factories/authUseCases', () => ({
@@ -62,6 +73,8 @@ describe('useRegisterViewModel', () => {
       await promise
     })
 
-    expect(result.current.loading).toBe(false)
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false)
+    })
   })
 })

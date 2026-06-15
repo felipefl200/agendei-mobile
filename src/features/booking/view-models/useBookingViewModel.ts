@@ -59,11 +59,14 @@ function useBookingViewModel(): BookingViewModel {
   const [selectedSlotState, setSelectedSlotState] = useState('')
   const [error, setError] = useState<string | null>(null)
   const specialtiesQuery = useSpecialties()
-  const doctorsQuery = useDoctors({
-    page: 1,
-    perPage: 20,
-    specialtyId: selectedSpecialty?.id,
-  })
+  const doctorsQuery = useDoctors(
+    {
+      page: 1,
+      perPage: 20,
+      specialtyId: selectedSpecialty?.id,
+    },
+    { enabled: !doctorId }
+  )
   const doctorQuery = useDoctor(doctorId)
   const selectedDoctor = doctorQuery.data ?? selectedDoctorState
   const availabilityQuery = useDoctorAvailability(
