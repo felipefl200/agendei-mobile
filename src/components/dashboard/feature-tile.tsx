@@ -23,7 +23,12 @@ function FeatureTile({
       <View style={[styles.iconSurface, { backgroundColor: `${color}14` }]}>
         <Icon color={color} name={icon} size={compact ? 'md' : 'lg'} />
       </View>
-      <Text style={[styles.title, compact ? styles.compactTitle : null]} numberOfLines={2}>
+      <Text
+        adjustsFontSizeToFit={!compact}
+        minimumFontScale={0.72}
+        numberOfLines={compact ? 2 : 1}
+        style={[styles.title, compact ? styles.compactTitle : null]}
+      >
         {title}
       </Text>
     </View>

@@ -43,6 +43,7 @@ export const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHT.bold,
     lineHeight: 16,
     textAlign: 'center',
+    width: '100%',
   },
   compactTitle: {
     flex: 1,

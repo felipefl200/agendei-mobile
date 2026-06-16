@@ -1,16 +1,21 @@
-import { Text, View } from 'react-native'
+import { Text, View, TouchableOpacity } from 'react-native'
 import { styles } from './section-header.styles'
 
 interface SectionHeaderProps {
   title: string
   actionLabel?: string
+  onActionPress?: () => void
 }
 
-function SectionHeader({ title, actionLabel }: SectionHeaderProps) {
+function SectionHeader({ title, actionLabel, onActionPress }: SectionHeaderProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
-      {actionLabel ? <Text style={styles.action}>{actionLabel}</Text> : null}
+      {actionLabel && onActionPress ? (
+        <TouchableOpacity activeOpacity={0.7} onPress={onActionPress}>
+          <Text style={styles.action}>{actionLabel}</Text>
+        </TouchableOpacity>
+      ) : null}
     </View>
   )
 }

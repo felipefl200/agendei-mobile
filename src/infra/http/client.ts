@@ -1,5 +1,5 @@
 import ky from 'ky'
-import { AppError, type AppErrorPayload } from '@/domain/errors/AppError'
+import { AppError, appErrorPayloadSchema } from '@/domain/errors/AppError'
 import { getAuthToken, removeAuthToken } from '@/infra/storage/authTokenStorage'
 
 type UnauthorizedHandler = () => void | Promise<void>
@@ -19,9 +19,14 @@ async function handleUnauthorized() {
 
 async function parseErrorResponse(response: Response) {
   try {
-    const payload = (await response.clone().json()) as Partial<AppErrorPayload>
+    const data = await response.clone().json()
+    const parsed = appErrorPayloadSchema.safeParse(data)
 
-    return AppError.fromPayload(payload, response.status)
+    if (parsed.success) {
+      return AppError.fromPayload(parsed.data, response.status)
+    }
+
+    return AppError.fromUnknown(response.status)
   } catch {
     return AppError.fromUnknown(response.status)
   }
@@ -44,7 +49,14 @@ const httpClient = ky.create({
       },
     ],
     afterResponse: [
-      async ({ response }) => {
+      async ({ request, response }) => {
+        const contentType = response.headers.get('Content-Type') ?? ''
+        const isJson = contentType.includes('application/json')
+
+        if (response.ok && !isJson) {
+          throw AppError.fromUnknown(response.status)
+        }
+
         if (response.ok) {
           return response
         }

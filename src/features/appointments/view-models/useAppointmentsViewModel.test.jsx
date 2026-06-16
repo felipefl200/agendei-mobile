@@ -1,8 +1,9 @@
-import { renderHook, act } from '@testing-library/react-native'
+import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import { useAppointmentsViewModel } from './useAppointmentsViewModel'
+import { AppError } from '@/domain/errors/AppError'
 import {
   cancelAppointmentUseCase,
   getAppointmentsHistoryUseCase,
@@ -33,8 +34,13 @@ describe('useAppointmentsViewModel', () => {
     vi.mocked(getUpcomingAppointmentsUseCase.execute).mockResolvedValue([])
     vi.mocked(getAppointmentsHistoryUseCase.execute).mockResolvedValue([])
     
-    // Simula o erro retornado pelo use case ao tentar cancelar uma consulta no passado
-    vi.mocked(cancelAppointmentUseCase.execute).mockRejectedValue(new Error('Não é possível cancelar uma consulta que já passou.'))
+    vi.mocked(cancelAppointmentUseCase.execute).mockRejectedValue(
+      new AppError({
+        statusCode: 400,
+        error: 'Business Rule Error',
+        message: 'Only future appointments can be canceled',
+      })
+    )
 
     const { result } = renderHook(() => useAppointmentsViewModel(), { wrapper })
 
@@ -48,6 +54,6 @@ describe('useAppointmentsViewModel', () => {
     })
 
     expect(error).toBeDefined()
-    expect(error?.message).toContain('Não é possível cancelar uma consulta que já passou.')
+    expect(error?.message).toContain('Somente consultas futuras podem ser canceladas.')
   })
 })

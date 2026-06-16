@@ -3,10 +3,11 @@ import { ListDoctorsInput } from '@/domain/ports/DoctorsGateway'
 import { getDoctorUseCase, listDoctorsUseCase } from '@/infra/factories/doctorsUseCases'
 import { queryKeys } from '@/infra/query/queryKeys'
 
-function useDoctors(input?: ListDoctorsInput) {
+function useDoctors(input?: ListDoctorsInput, options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: queryKeys.doctors.list(input),
     queryFn: () => listDoctorsUseCase.execute(input),
+    enabled: options?.enabled,
   })
 }
 

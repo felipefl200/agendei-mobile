@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-native'
+import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
@@ -6,8 +6,19 @@ import { useLoginViewModel } from './useLoginViewModel'
 import { loginUseCase } from '@/infra/factories/authUseCases'
 
 // Mock dependencies
-vi.mock('expo-router', () => ({
-  useRouter: () => ({ replace: vi.fn() })
+vi.mock(
+  'expo-router',
+  () => ({
+    useRouter: () => ({ replace: vi.fn() }),
+  }),
+  { virtual: true },
+)
+
+vi.mock('@/store/useAuthStore', () => ({
+  useAuthStore: (selector) =>
+    selector({
+      signIn: vi.fn(),
+    }),
 }))
 
 vi.mock('@/infra/factories/authUseCases', () => ({
@@ -54,6 +65,6 @@ describe('useLoginViewModel', () => {
       await result.current.handleLogin()
     })
 
-    expect(result.current.error).toBe('Ocorreu um erro ao fazer login. Tente novamente.')
+    expect(result.current.error).toBe('Não foi possível concluir a solicitação. Tente novamente.')
   })
 })
