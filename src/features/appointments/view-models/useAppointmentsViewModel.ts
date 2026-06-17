@@ -8,6 +8,7 @@ import {
 } from '@/infra/factories/appointmentsUseCases'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { toAppointmentListItem } from '@/utils/appointmentPresentation'
+import { getTodayDateString } from '@/utils/date'
 import { getCancelAppointmentErrorMessage } from '@/utils/getCancelAppointmentErrorMessage'
 import { useState } from 'react'
 
@@ -66,8 +67,18 @@ function useAppointmentsViewModel(): AppointmentsViewModel {
   })
   const isUpcomingTab = activeTab === 'upcoming'
   const activeQuery = isUpcomingTab ? upcomingAppointmentsQuery : appointmentsHistoryQuery
+  
+  const todayDate = getTodayDateString()
+  const allUpcoming = upcomingAppointmentsQuery.data ?? []
+  const allHistory = appointmentsHistoryQuery.data ?? []
+
+  const futureUpcoming = allUpcoming.filter(a => a.date >= todayDate)
+  const pastUpcoming = allUpcoming.filter(a => a.date < todayDate)
+
+  const rawAppointments = isUpcomingTab ? futureUpcoming : [...pastUpcoming, ...allHistory]
+
   const appointmentVariant: AppointmentViewItem['variant'] = isUpcomingTab ? 'future' : 'past'
-  const appointments = (activeQuery.data ?? []).map((appointment) => ({
+  const appointments = rawAppointments.map((appointment) => ({
     id: appointment.id,
     ...toAppointmentListItem(appointment),
     isCanceling: cancelingAppointmentId === appointment.id,

@@ -48,7 +48,7 @@ const doctorFixture: Doctor = {
 
 const appointmentSummaryFixture: AppointmentSummary = {
   clinicName: 'Clinica Central',
-  date: '2026-06-15',
+  date: '2026-06-22',
   doctorName: 'Dra. Clara',
   id: 'appointment-1',
   specialtyName: 'Cardiologia',
@@ -61,7 +61,7 @@ const appointmentDetailsFixture: AppointmentDetails = {
     id: 'clinic-1',
     name: 'Clinica Central',
   },
-  date: '2026-06-15',
+  date: '2026-06-22',
   doctor: {
     id: 'doctor-1',
     name: 'Dra. Clara',

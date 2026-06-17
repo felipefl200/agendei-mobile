@@ -25,10 +25,10 @@ describe('appointmentPresentation', () => {
   it('maps an appointment summary to a list item', () => {
     expect(toAppointmentListItem(appointmentSummaryFixture)).toEqual({
       clinic: 'Clinica Central',
-      day: '15',
+      day: '22',
       doctorName: 'Dra. Clara',
       month: 'JUN',
-      shortDate: '15 JUN',
+      shortDate: '22 JUN',
       specialty: 'Cardiologia',
       status: 'scheduled',
       time: '09:00',

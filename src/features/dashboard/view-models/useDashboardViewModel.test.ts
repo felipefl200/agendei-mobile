@@ -35,7 +35,7 @@ describe('useDashboardViewModel', () => {
     await waitFor(() => {
       expect(result.current.nextAppointment).toMatchObject({
         clinic: 'Clinica Central',
-        date: '15 JUN',
+        date: '22 JUN',
         doctorName: 'Dra. Clara',
         specialty: 'Cardiologia',
         time: '09:00',

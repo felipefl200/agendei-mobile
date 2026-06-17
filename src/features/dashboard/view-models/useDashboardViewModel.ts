@@ -2,6 +2,7 @@ import { IconName } from '@/components/icon/icon'
 import { COLORS } from '@/constants/theme'
 import { useAuthStore } from '@/store/useAuthStore'
 import { getAppointmentDateParts } from '@/utils/appointmentPresentation'
+import { getTodayDateString } from '@/utils/date'
 import { getUpcomingAppointmentsUseCase } from '@/infra/factories/appointmentsUseCases'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { useQuery } from '@tanstack/react-query'
@@ -56,7 +57,11 @@ function useDashboardViewModel(): DashboardViewModel {
     queryKey: queryKeys.appointments.upcoming(),
     queryFn: () => getUpcomingAppointmentsUseCase.execute(),
   })
-  const nextAppointment = upcomingAppointmentsQuery.data?.[0]
+  const today = getTodayDateString()
+  const futureAppointments = (upcomingAppointmentsQuery.data ?? []).filter(
+    (appointment) => appointment.date >= today
+  )
+  const nextAppointment = futureAppointments[0]
   const nextAppointmentDateParts = nextAppointment
     ? getAppointmentDateParts(nextAppointment.date)
     : null
