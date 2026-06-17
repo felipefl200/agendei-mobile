@@ -8,11 +8,9 @@ import { COLORS, SPACING } from '@/constants/theme'
 import { useRegisterViewModel } from '@/features/auth/view-models/useRegisterViewModel'
 import logo from '@/assets/logo.png'
 import { styles } from './RegisterScreen.styles'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 function RegisterScreen() {
   const vm = useRegisterViewModel()
-  const insets = useSafeAreaInsets()
 
   return (
     <KeyboardScrollScreen

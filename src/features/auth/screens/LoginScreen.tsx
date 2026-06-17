@@ -4,11 +4,10 @@ import Button from '@/components/button/button'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
 import { KeyboardScrollScreen } from '@/components/screen'
-import { COLORS, SPACING } from '@/constants/theme'
+import { COLORS } from '@/constants/theme'
 import { useLoginViewModel } from '@/features/auth/view-models/useLoginViewModel'
 import logo from '@/assets/logo.png'
 import { styles } from './LoginScreen.styles'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 function LoginScreen() {
   const vm = useLoginViewModel()
