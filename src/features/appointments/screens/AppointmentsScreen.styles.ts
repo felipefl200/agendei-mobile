@@ -2,18 +2,13 @@ import { COLORS, FONT_SIZE, FONT_WEIGHT, SPACING } from '@/constants/theme'
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  safeArea: {
-    backgroundColor: COLORS.background,
-    flex: 1,
-  },
   container: {
     backgroundColor: COLORS.background,
     flex: 1,
   },
   content: {
-    paddingBottom: SPACING[6],
+    paddingBottom: SPACING[3],
     paddingHorizontal: SPACING[6],
-    paddingTop: SPACING[4],
   },
   header: {
     alignItems: 'center',

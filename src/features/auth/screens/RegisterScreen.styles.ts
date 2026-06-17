@@ -9,18 +9,12 @@ import {
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  container: {
-    backgroundColor: COLORS.background,
-    flex: 1,
-  },
   content: {
     gap: SPACING[4],
-    minHeight: '100%',
-    overflow: 'hidden',
-    padding: SPACING[4],
+    flexGrow: 1,
     paddingBottom: SPACING[8],
     paddingHorizontal: SPACING[6],
-    paddingTop: SPACING[10],
+    paddingTop: SPACING[5],
   },
   backgroundCircleTop: {
     backgroundColor: COLORS.primaryLight,
@@ -165,6 +159,7 @@ export const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexDirection: 'row',
     gap: SPACING[3],
+    paddingTop: SPACING[2],
   },
   checkbox: {
     alignItems: 'center',
@@ -218,6 +213,7 @@ export const styles = StyleSheet.create({
   socialRow: {
     flexDirection: 'row',
     gap: SPACING[3],
+    paddingTop: SPACING[3],
   },
   socialButton: {
     alignItems: 'center',
@@ -250,6 +246,7 @@ export const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontSize: FONT_SIZE.md,
     textAlign: 'center',
+    paddingTop: SPACING[3],
   },
   footerLink: {
     color: COLORS.primary,

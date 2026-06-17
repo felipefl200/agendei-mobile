@@ -1,7 +1,7 @@
 import { FlatList, View, Text } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
+import { Screen } from '@/components/screen'
 import DoctorCard from '@/components/search-doctor/doctor-card'
 import FilterChip from '@/components/search-doctor/filter-chip'
 import { COLORS, SPACING } from '@/constants/theme'
@@ -58,11 +58,13 @@ function SearchDoctorScreen() {
   }
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <Screen>
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={styles.content}
           data={vm.doctors}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id}
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={
@@ -88,7 +90,7 @@ function SearchDoctorScreen() {
           showsVerticalScrollIndicator={false}
         />
       </View>
-    </SafeAreaView>
+    </Screen>
   )
 }
 

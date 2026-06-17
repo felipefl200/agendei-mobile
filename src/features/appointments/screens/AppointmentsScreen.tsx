@@ -1,7 +1,7 @@
 import { Alert, FlatList, Text, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import AppointmentListCard from '@/components/appointments/appointment-list-card'
 import AppointmentsTabs from '@/components/appointments/appointments-tabs'
+import { Screen } from '@/components/screen'
 import { useAppointmentsViewModel } from '@/features/appointments/view-models/useAppointmentsViewModel'
 import { styles } from './AppointmentsScreen.styles'
 import { SPACING } from '@/constants/theme'
@@ -10,27 +10,26 @@ function AppointmentsScreen() {
   const vm = useAppointmentsViewModel()
 
   function handleCancel(appointmentId: string) {
-    Alert.alert(
-      'Cancelar consulta',
-      'Tem certeza que deseja cancelar esta consulta?',
-      [
-        {
-          text: 'Manter',
-          style: 'cancel',
+    Alert.alert('Cancelar consulta', 'Tem certeza que deseja cancelar esta consulta?', [
+      {
+        text: 'Manter',
+        style: 'cancel',
+      },
+      {
+        text: 'Cancelar consulta',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await vm.cancelAppointment(appointmentId)
+          } catch (error) {
+            Alert.alert(
+              'Não foi possível cancelar',
+              error instanceof Error ? error.message : 'Erro desconhecido'
+            )
+          }
         },
-        {
-          text: 'Cancelar consulta',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-               await vm.cancelAppointment(appointmentId)
-            } catch (error) {
-              Alert.alert('Não foi possível cancelar', error instanceof Error ? error.message : 'Erro desconhecido')
-            }
-          },
-        },
-      ],
-    )
+      },
+    ])
   }
 
   function renderHeader() {
@@ -52,7 +51,7 @@ function AppointmentsScreen() {
   }
 
   return (
-    <SafeAreaView edges={['top']} style={styles.safeArea}>
+    <Screen>
       <View style={styles.container}>
         <FlatList
           contentContainerStyle={styles.content}
@@ -90,7 +89,7 @@ function AppointmentsScreen() {
           showsVerticalScrollIndicator={false}
         />
       </View>
-    </SafeAreaView>
+    </Screen>
   )
 }
 
