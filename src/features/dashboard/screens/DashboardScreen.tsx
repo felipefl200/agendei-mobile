@@ -5,7 +5,7 @@ import SectionHeader from '@/components/dashboard/section-header'
 import Icon from '@/components/icon/icon'
 import { Screen } from '@/components/screen'
 import { COLORS, SPACING } from '@/constants/theme'
-import { useDashboardViewModel } from '@/features/appointments/view-models/useDashboardViewModel'
+import { useDashboardViewModel } from '@/features/dashboard/view-models/useDashboardViewModel'
 import { styles } from './DashboardScreen.styles'
 import { useBottomTabBarHeight } from 'expo-router/build/react-navigation/bottom-tabs'
 
@@ -17,7 +17,13 @@ function DashboardScreen() {
     return (
       <View>
         <View style={styles.header}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
             <View style={styles.greeting}>
               <Text style={styles.greetingTitle}>Olá, {vm.userName}!</Text>
               <Text style={styles.greetingSubtitle}>
