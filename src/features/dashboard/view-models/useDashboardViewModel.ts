@@ -4,9 +4,11 @@ import { useAuthStore } from '@/store/useAuthStore'
 import { getAppointmentDateParts } from '@/utils/appointmentPresentation'
 import { getTodayDateString } from '@/utils/date'
 import { getUpcomingAppointmentsUseCase } from '@/infra/factories/appointmentsUseCases'
+import { logoutUseCase } from '@/infra/factories/authUseCases'
 import { queryKeys } from '@/infra/query/queryKeys'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
+import { useState } from 'react'
 
 interface DashboardFeatureItem {
   title: string
@@ -33,6 +35,8 @@ interface DashboardViewModel {
   nextAppointmentLoading: boolean
   specialties: DashboardFeatureItem[]
   quickActions: DashboardFeatureItem[]
+  isLoggingOut: boolean
+  handleLogout: () => Promise<void>
   handleSeeAllSpecialties: () => void
 }
 
@@ -53,10 +57,14 @@ const quickActions: DashboardFeatureItem[] = [
 function useDashboardViewModel(): DashboardViewModel {
   const router = useRouter()
   const user = useAuthStore((state) => state.user)
+  const signOut = useAuthStore((state) => state.signOut)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
   const upcomingAppointmentsQuery = useQuery({
     queryKey: queryKeys.appointments.upcoming(),
     queryFn: () => getUpcomingAppointmentsUseCase.execute(),
   })
+  
   const today = getTodayDateString()
   const futureAppointments = (upcomingAppointmentsQuery.data ?? []).filter(
     (appointment) => appointment.date >= today
@@ -65,6 +73,18 @@ function useDashboardViewModel(): DashboardViewModel {
   const nextAppointmentDateParts = nextAppointment
     ? getAppointmentDateParts(nextAppointment.date)
     : null
+
+  async function handleLogout() {
+    setIsLoggingOut(true)
+    try {
+      await logoutUseCase.execute()
+    } catch {
+      // Falha silenciosa para nao impedir o usuario de sair localmente
+    } finally {
+      await signOut()
+      setIsLoggingOut(false)
+    }
+  }
 
   return {
     userName: user?.name ?? 'paciente',
@@ -82,6 +102,8 @@ function useDashboardViewModel(): DashboardViewModel {
     nextAppointmentLoading: upcomingAppointmentsQuery.isLoading,
     specialties,
     quickActions,
+    isLoggingOut,
+    handleLogout,
     handleSeeAllSpecialties: () => router.push('/search'),
   }
 }

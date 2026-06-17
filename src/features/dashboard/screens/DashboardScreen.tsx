@@ -1,4 +1,4 @@
-import { FlatList, Text, View } from 'react-native'
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
 import AppointmentCard from '@/components/dashboard/appointment-card'
 import FeatureTile from '@/components/dashboard/feature-tile'
 import SectionHeader from '@/components/dashboard/section-header'
@@ -30,7 +30,13 @@ function DashboardScreen() {
                 Como podemos cuidar de você hoje?
               </Text>
             </View>
-            <View style={styles.iconButton} />
+            <TouchableOpacity 
+              disabled={vm.isLoggingOut} 
+              style={styles.iconButton} 
+              onPress={vm.handleLogout}
+            >
+              <Icon color={COLORS.textSecondary} name="logOut" size="md" />
+            </TouchableOpacity>
             <View style={styles.notificationButton}>
               <Icon color={COLORS.primaryDark} name="bell" size="md" />
               <View style={styles.notificationDot} />

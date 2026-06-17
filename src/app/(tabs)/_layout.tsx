@@ -5,11 +5,11 @@ import Icon, { IconName } from '@/components/icon/icon'
 import { COLORS, FONT_SIZE, FONT_WEIGHT, SPACING } from '@/constants/theme'
 
 function tabIcon(name: IconName) {
-  return function TabIcon({ color, focused }: { color: ColorValue; focused: boolean }) {
+  return function TabIcon({ color }: { color: ColorValue }) {
     const iconColor = String(color)
 
     return (
-      <Icon color={iconColor} fill={focused ? iconColor : 'none'} name={name} size="md" />
+      <Icon color={iconColor} name={name} size="md" />
     )
   }
 }

@@ -57,6 +57,10 @@ class ApiAuthAdapter implements AuthGateway {
 
     return response.user as User
   }
+
+  async logout(): Promise<void> {
+    await httpClient.post('auth/logout')
+  }
 }
 
 export { ApiAuthAdapter }

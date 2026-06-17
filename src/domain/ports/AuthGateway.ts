@@ -38,6 +38,7 @@ interface AuthGateway {
   login(credentials: LoginCredentials): Promise<AuthSession>
   register(input: RegisterPatientInput): Promise<RegisterSession>
   getCurrentUser(): Promise<User>
+  logout(): Promise<void>
 }
 
 export type {

@@ -26,6 +26,7 @@ vi.mock('lucide-react-native', () => ({
   Home: LucideIcon,
   Lock: LucideIcon,
   LockKeyhole: LucideIcon,
+  LogOut: LucideIcon,
   Mail: LucideIcon,
   MapPin: LucideIcon,
   Menu: LucideIcon,
