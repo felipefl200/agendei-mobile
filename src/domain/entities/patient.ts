@@ -6,6 +6,12 @@ interface Patient {
   birthDate: string | null
   document: string | null
   avatarUrl: string | null
+  healthInsuranceName: string | null
+  healthInsuranceCard: string | null
+  bloodType: string | null
+  allergies: string | null
+  receiveNotifications: boolean
+  appointmentReminders: boolean
   createdAt: string
   updatedAt: string
 }

@@ -14,6 +14,10 @@ const queryKeys = {
     detail: (id: string) => [...queryKeys.doctors.all, 'detail', id] as const,
     list: (input?: ListDoctorsInput) => [...queryKeys.doctors.all, 'list', input] as const,
   },
+  profile: {
+    all: ['profile'] as const,
+    me: () => [...queryKeys.profile.all, 'me'] as const,
+  },
   specialties: {
     all: ['specialties'] as const,
     list: () => [...queryKeys.specialties.all, 'list'] as const,

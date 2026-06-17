@@ -69,6 +69,13 @@ export default function TabLayout() {
           tabBarIcon: tabIcon('calendarDays'),
         }}
       />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: tabIcon('user'),
+        }}
+      />
     </Tabs>
   )
 }

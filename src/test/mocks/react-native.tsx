@@ -36,6 +36,21 @@ Pressable.displayName = 'Pressable'
 
 const TouchableOpacity = Pressable
 
+const Switch = forwardRef<HTMLInputElement, AnyProps>(
+  ({ onValueChange, value = false, ...props }, ref) => (
+    <input
+      ref={ref}
+      checked={value}
+      onChange={(event) => onValueChange?.(event.currentTarget.checked)}
+      type="checkbox"
+      {...props}
+    />
+  ),
+)
+Switch.displayName = 'Switch'
+
+const Modal = ({ children, visible = true }: AnyProps) => (visible ? <div>{children}</div> : null)
+
 const TextInput = forwardRef<HTMLInputElement, AnyProps>(
   (
     {
@@ -85,9 +100,11 @@ const Alert = {
 
 export {
   Alert,
+  Modal,
   Platform,
   Pressable,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,

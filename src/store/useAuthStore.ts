@@ -11,6 +11,7 @@ interface AuthState {
   isRestoring: boolean
   signIn(session: AuthSession): void
   signOut(): Promise<void>
+  updateUser(input: Partial<Pick<User, 'email' | 'name'>>): void
   restoreSession(): Promise<void>
 }
 
@@ -36,6 +37,11 @@ const useAuthStore = create<AuthState>((set) => ({
       isAuthenticated: false,
       isRestoring: false,
     })
+  },
+  updateUser: (input) => {
+    set((state) => ({
+      user: state.user ? { ...state.user, ...input } : state.user,
+    }))
   },
   restoreSession: async () => {
     set({ isRestoring: true })

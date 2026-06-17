@@ -1,5 +1,6 @@
 import { AppointmentDetails, AppointmentSummary } from '@/domain/entities/appointment'
 import { Doctor } from '@/domain/entities/doctor'
+import { Patient } from '@/domain/entities/patient'
 import { Specialty } from '@/domain/entities/specialty'
 import { User } from '@/domain/entities/user'
 
@@ -46,6 +47,24 @@ const doctorFixture: Doctor = {
   updatedAt: '2026-01-01T00:00:00.000Z',
 }
 
+const patientFixture: Patient = {
+  allergies: 'Penicilina',
+  appointmentReminders: true,
+  avatarUrl: null,
+  birthDate: '1988-04-15T00:00:00.000Z',
+  bloodType: 'O+',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  document: '12345678900',
+  email: userFixture.email,
+  healthInsuranceCard: '1234567890123456',
+  healthInsuranceName: 'Bradesco Saude',
+  id: 'patient-1',
+  name: userFixture.name,
+  phone: '11987654321',
+  receiveNotifications: true,
+  updatedAt: '2026-01-01T00:00:00.000Z',
+}
+
 const appointmentSummaryFixture: AppointmentSummary = {
   clinicName: 'Clinica Central',
   date: '2026-06-22',
@@ -80,6 +99,7 @@ export {
   appointmentDetailsFixture,
   appointmentSummaryFixture,
   doctorFixture,
+  patientFixture,
   specialtyFixture,
   userFixture,
 }

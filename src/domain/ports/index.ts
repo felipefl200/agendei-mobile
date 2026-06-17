@@ -17,4 +17,9 @@ export type {
   GetDoctorAvailabilityInput,
 } from './DoctorAvailabilityGateway'
 export type { DoctorsGateway, ListDoctorsInput, ListDoctorsResult, Pagination } from './DoctorsGateway'
+export type {
+  PatientProfileGateway,
+  UpdatePatientPasswordInput,
+  UpdatePatientProfileInput,
+} from './PatientProfileGateway'
 export type { SpecialtiesGateway } from './SpecialtiesGateway'

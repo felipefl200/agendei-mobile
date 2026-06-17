@@ -6,6 +6,7 @@ function makeSut() {
   const authGateway = {
     getCurrentUser: vi.fn(),
     login: vi.fn(),
+    logout: vi.fn(),
     register: vi.fn(),
   }
   const authTokenStorage = {
