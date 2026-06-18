@@ -5,6 +5,17 @@ import { secureStoreMock } from './mocks/secureStore'
 
 vi.mock('expo-secure-store', () => secureStoreMock)
 
+vi.mock('expo-file-system', () => ({
+  File: class FileMock {
+    constructor(readonly uri: string) {}
+
+    upload() {
+      throw new Error('File.upload mock was not configured.')
+    }
+  },
+  UploadType: { MULTIPART: 1 },
+}))
+
 const LucideIcon = (props: Record<string, unknown>) => React.createElement('span', props)
 
 vi.mock('lucide-react-native', () => ({
@@ -13,6 +24,7 @@ vi.mock('lucide-react-native', () => ({
   Baby: LucideIcon,
   Bell: LucideIcon,
   CalendarDays: LucideIcon,
+  Camera: LucideIcon,
   Check: LucideIcon,
   ChevronLeft: LucideIcon,
   ChevronRight: LucideIcon,
@@ -26,6 +38,7 @@ vi.mock('lucide-react-native', () => ({
   Heart: LucideIcon,
   HeartPulse: LucideIcon,
   Home: LucideIcon,
+  Image: LucideIcon,
   Lock: LucideIcon,
   LockKeyhole: LucideIcon,
   LogOut: LucideIcon,

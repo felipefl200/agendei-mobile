@@ -1,10 +1,11 @@
 import { Patient } from '@/domain/entities/patient'
 import {
   PatientProfileGateway,
+  UpdatePatientAvatarInput,
   UpdatePatientPasswordInput,
   UpdatePatientProfileInput,
 } from '@/domain/ports/PatientProfileGateway'
-import { httpClient } from '@/infra/http/client'
+import { httpClient, httpMultipartFilePutJson } from '@/infra/http/client'
 import { z } from 'zod'
 
 const patientSchema = z.object({
@@ -25,12 +26,28 @@ const patientSchema = z.object({
   updatedAt: z.string(),
 })
 
+const avatarProfileSchema = z.object({
+  type: z.union([z.literal('patient'), z.literal('doctor')]),
+  avatarUrl: z.string(),
+})
+
 class ApiPatientProfileAdapter implements PatientProfileGateway {
   async getMe(): Promise<Patient> {
     const data = await httpClient.get('patients/me').json()
     const response = z.object({ patient: patientSchema }).parse(data)
 
     return response.patient as Patient
+  }
+
+  async updateAvatar(input: UpdatePatientAvatarInput) {
+    const data = await httpMultipartFilePutJson('profile/avatar', {
+      fieldName: 'avatar',
+      mimeType: input.type,
+      uri: input.uri,
+    })
+    const response = z.object({ profile: avatarProfileSchema }).parse(data)
+
+    return response.profile
   }
 
   async updateMe(input: UpdatePatientProfileInput): Promise<Patient> {

@@ -20,14 +20,28 @@ interface UpdatePatientPasswordInput {
   newPassword: string
 }
 
+interface UpdatePatientAvatarInput {
+  uri: string
+  name: string
+  type: string
+}
+
+interface UpdatedPatientAvatar {
+  type: 'patient' | 'doctor'
+  avatarUrl: string
+}
+
 interface PatientProfileGateway {
   getMe(): Promise<Patient>
+  updateAvatar(input: UpdatePatientAvatarInput): Promise<UpdatedPatientAvatar>
   updateMe(input: UpdatePatientProfileInput): Promise<Patient>
   updatePassword(input: UpdatePatientPasswordInput): Promise<void>
 }
 
 export type {
   PatientProfileGateway,
+  UpdatedPatientAvatar,
+  UpdatePatientAvatarInput,
   UpdatePatientPasswordInput,
   UpdatePatientProfileInput,
 }

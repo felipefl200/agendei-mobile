@@ -19,7 +19,33 @@ export const styles = StyleSheet.create({
     borderRadius: RADIUS.full,
     height: 96,
     justifyContent: 'center',
+    overflow: 'hidden',
     width: 96,
+  },
+  avatarActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: SPACING[2],
+    marginTop: SPACING[1],
+  },
+  avatarButton: {
+    alignItems: 'center',
+    backgroundColor: COLORS.primaryLight,
+    borderRadius: RADIUS.md,
+    flexDirection: 'row',
+    gap: SPACING[2],
+    height: 34,
+    justifyContent: 'center',
+    paddingHorizontal: SPACING[3],
+  },
+  avatarButtonText: {
+    color: COLORS.primaryDark,
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  avatarImage: {
+    height: '100%',
+    width: '100%',
   },
   avatarText: {
     color: COLORS.primaryDark,

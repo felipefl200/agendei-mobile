@@ -1,4 +1,5 @@
 import { PatientProfileGateway } from '@/domain/ports/PatientProfileGateway'
+import { z } from 'zod'
 
 interface UpdatePatientPasswordUseCaseInput {
   currentPassword: string
@@ -6,24 +7,28 @@ interface UpdatePatientPasswordUseCaseInput {
   passwordConfirmation: string
 }
 
+const updatePasswordSchema = z
+  .object({
+    currentPassword: z.string().trim().min(1, 'Informe a senha atual e a nova senha.'),
+    newPassword: z.string().trim().min(8, 'A nova senha deve ter pelo menos 8 caracteres.'),
+    passwordConfirmation: z.string().trim(),
+  })
+  .refine((data) => data.newPassword === data.passwordConfirmation, {
+    message: 'As senhas não conferem.',
+    path: ['passwordConfirmation'],
+  })
+
 class UpdatePatientPasswordUseCase {
   constructor(private readonly patientProfileGateway: PatientProfileGateway) {}
 
   async execute(input: UpdatePatientPasswordUseCaseInput) {
-    const currentPassword = input.currentPassword.trim()
-    const newPassword = input.newPassword.trim()
+    const parseResult = updatePasswordSchema.safeParse(input)
 
-    if (!currentPassword || !newPassword) {
-      throw new Error('Informe a senha atual e a nova senha.')
+    if (!parseResult.success) {
+      throw new Error(parseResult.error.issues[0].message)
     }
 
-    if (newPassword.length < 8) {
-      throw new Error('A nova senha deve ter pelo menos 8 caracteres.')
-    }
-
-    if (newPassword !== input.passwordConfirmation.trim()) {
-      throw new Error('As senhas não conferem.')
-    }
+    const { currentPassword, newPassword } = parseResult.data
 
     return this.patientProfileGateway.updatePassword({
       currentPassword,

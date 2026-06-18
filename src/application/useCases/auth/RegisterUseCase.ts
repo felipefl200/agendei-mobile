@@ -4,6 +4,16 @@ import {
   RegisterSession,
 } from '@/domain/ports/AuthGateway'
 import { AuthTokenStorage } from '@/domain/ports/AuthTokenStorage'
+import { z } from 'zod'
+
+const registerSchema = z.object({
+  name: z.string().trim().min(1, 'Informe seu nome completo.'),
+  email: z.string().trim().toLowerCase().email('Informe um e-mail válido.'),
+  password: z.string().min(8, 'A senha deve ter pelo menos 8 caracteres.'),
+  phone: z.string().optional(),
+  birthDate: z.string().optional(),
+  document: z.string().optional(),
+})
 
 class RegisterUseCase {
   constructor(
@@ -12,11 +22,13 @@ class RegisterUseCase {
   ) {}
 
   async execute(input: RegisterPatientInput): Promise<RegisterSession> {
-    const session = await this.authGateway.register({
-      ...input,
-      email: input.email.trim().toLowerCase(),
-      name: input.name.trim(),
-    })
+    const parseResult = registerSchema.safeParse(input)
+
+    if (!parseResult.success) {
+      throw new Error(parseResult.error.issues[0].message)
+    }
+
+    const session = await this.authGateway.register(parseResult.data)
 
     await this.authTokenStorage.setToken(session.token)
 

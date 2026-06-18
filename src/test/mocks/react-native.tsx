@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react'
+import { vi } from 'vitest'
 
 type AnyProps = Record<string, any>
 
@@ -28,6 +29,11 @@ const Text = forwardRef<HTMLSpanElement, AnyProps>(({ numberOfLines, style, ...p
   <span ref={ref} {...props} />
 ))
 Text.displayName = 'Text'
+
+const Image = forwardRef<HTMLImageElement, AnyProps>(({ source, style, ...props }, ref) => (
+  <img ref={ref} src={source?.uri} {...props} />
+))
+Image.displayName = 'Image'
 
 const Pressable = forwardRef<HTMLButtonElement, AnyProps>((props, ref) => (
   <button ref={ref} type="button" {...mapPressableProps(props)} />
@@ -95,11 +101,12 @@ const Platform = {
 }
 
 const Alert = {
-  alert: () => undefined,
+  alert: vi.fn(),
 }
 
 export {
   Alert,
+  Image,
   Modal,
   Platform,
   Pressable,

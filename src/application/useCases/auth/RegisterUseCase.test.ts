@@ -39,13 +39,13 @@ describe('RegisterUseCase', () => {
     authGateway.register.mockResolvedValue(session)
 
     await expect(
-      sut.execute({ email: ' ANA@Example.COM ', name: ' Ana Paciente ', password: 'secret' }),
+      sut.execute({ email: ' ANA@Example.COM ', name: ' Ana Paciente ', password: 'secret123' }),
     ).resolves.toBe(session)
 
     expect(authGateway.register).toHaveBeenCalledWith({
       email: 'ana@example.com',
       name: 'Ana Paciente',
-      password: 'secret',
+      password: 'secret123',
     })
     expect(authTokenStorage.setToken).toHaveBeenCalledWith('token-1')
   })
@@ -56,7 +56,7 @@ describe('RegisterUseCase', () => {
     authGateway.register.mockRejectedValue(error)
 
     await expect(
-      sut.execute({ email: 'ana@example.com', name: 'Ana', password: 'secret' }),
+      sut.execute({ email: 'ana@example.com', name: 'Ana', password: 'secret123' }),
     ).rejects.toBe(error)
     expect(authTokenStorage.setToken).not.toHaveBeenCalled()
   })

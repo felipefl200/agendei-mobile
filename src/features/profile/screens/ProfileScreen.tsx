@@ -1,4 +1,5 @@
 import { Modal, Pressable, Switch, Text, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import Button from '@/components/button/button'
 import Icon from '@/components/icon/icon'
 import Input from '@/components/input/input'
@@ -6,12 +7,17 @@ import ProfileHeaderCard from '@/components/profile/profile-header-card'
 import ProfileRow from '@/components/profile/profile-row'
 import ProfileSection from '@/components/profile/profile-section'
 import { ScrollScreen } from '@/components/screen'
-import { COLORS } from '@/constants/theme'
+import { COLORS, SPACING } from '@/constants/theme'
 import { useProfileViewModel } from '@/features/profile/view-models/useProfileViewModel'
 import { styles } from './ProfileScreen.styles'
 
 function ProfileScreen() {
   const vm = useProfileViewModel()
+  const insets = useSafeAreaInsets()
+  const modalBackdropStyle = [
+    styles.modalBackdrop,
+    { paddingBottom: Math.max(insets.bottom, SPACING[4]) },
+  ]
 
   return (
     <ScrollScreen contentContainerStyle={styles.content}>
@@ -34,10 +40,14 @@ function ProfileScreen() {
         <View style={styles.body}>
           <ProfileHeaderCard
             avatarInitials={vm.avatarInitials}
+            avatarUrl={vm.avatarUrl}
             email={vm.email}
+            isUploadingAvatar={vm.isUploadingAvatar}
             name={vm.name}
+            onAvatarPress={vm.openAvatarOptions}
             onEditPress={vm.openMainForm}
           />
+          {vm.avatarError ? <Text style={styles.formError}>{vm.avatarError}</Text> : null}
 
           <ProfileSection title="Dados pessoais">
             <ProfileRow icon="user" label="Nome completo" onPress={() => vm.openFieldForm('name')} value={vm.name} />
@@ -98,7 +108,7 @@ function ProfileScreen() {
       )}
 
       <Modal animationType="slide" transparent visible={vm.isMainFormVisible}>
-        <View style={styles.modalBackdrop}>
+        <View style={modalBackdropStyle}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Editar perfil</Text>
             <Input
@@ -150,7 +160,7 @@ function ProfileScreen() {
       </Modal>
 
       <Modal animationType="slide" transparent visible={Boolean(vm.editingField)}>
-        <View style={styles.modalBackdrop}>
+        <View style={modalBackdropStyle}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>{vm.fieldLabel}</Text>
             <Input
@@ -173,7 +183,7 @@ function ProfileScreen() {
       </Modal>
 
       <Modal animationType="slide" transparent visible={vm.isPasswordFormVisible}>
-        <View style={styles.modalBackdrop}>
+        <View style={modalBackdropStyle}>
           <View style={styles.modalCard}>
             <Text style={styles.modalTitle}>Alterar senha</Text>
             <Input

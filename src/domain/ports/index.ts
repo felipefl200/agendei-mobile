@@ -19,6 +19,8 @@ export type {
 export type { DoctorsGateway, ListDoctorsInput, ListDoctorsResult, Pagination } from './DoctorsGateway'
 export type {
   PatientProfileGateway,
+  UpdatedPatientAvatar,
+  UpdatePatientAvatarInput,
   UpdatePatientPasswordInput,
   UpdatePatientProfileInput,
 } from './PatientProfileGateway'

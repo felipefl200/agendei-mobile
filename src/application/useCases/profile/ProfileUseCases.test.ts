@@ -1,12 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
 import { patientFixture } from '@/test/fixtures'
 import { GetPatientProfileUseCase } from './GetPatientProfileUseCase'
+import { UpdatePatientAvatarUseCase } from './UpdatePatientAvatarUseCase'
 import { UpdatePatientPasswordUseCase } from './UpdatePatientPasswordUseCase'
 import { UpdatePatientProfileUseCase } from './UpdatePatientProfileUseCase'
 
 function makeGateway() {
   return {
     getMe: vi.fn(),
+    updateAvatar: vi.fn(),
     updateMe: vi.fn(),
     updatePassword: vi.fn(),
   }
@@ -45,6 +47,35 @@ describe('profile use cases', () => {
     await expect(new UpdatePatientProfileUseCase(makeGateway()).execute({})).rejects.toThrow(
       'Informe ao menos um dado para atualizar.',
     )
+  })
+
+  it('validates and delegates avatar updates', async () => {
+    const gateway = makeGateway()
+    gateway.updateAvatar.mockResolvedValue({
+      avatarUrl: 'https://example.com/avatar.webp',
+      type: 'patient',
+    })
+    const useCase = new UpdatePatientAvatarUseCase(gateway)
+
+    await expect(
+      useCase.execute({ name: '', type: 'image/png', uri: 'file://avatar.png' }),
+    ).rejects.toThrow('Selecione uma imagem para atualizar seu avatar.')
+
+    await expect(
+      useCase.execute({ name: 'avatar.gif', type: 'image/gif', uri: 'file://avatar.gif' }),
+    ).rejects.toThrow('Use uma imagem JPG, PNG ou WebP.')
+
+    await useCase.execute({
+      name: 'avatar.png',
+      type: 'image/png',
+      uri: 'file://avatar.png',
+    })
+
+    expect(gateway.updateAvatar).toHaveBeenCalledWith({
+      name: 'avatar.png',
+      type: 'image/png',
+      uri: 'file://avatar.png',
+    })
   })
 
   it('validates password confirmation and delegates valid password changes', async () => {

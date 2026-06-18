@@ -1,8 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { Alert } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
 import { logoutUseCase } from '@/infra/factories/authUseCases'
 import {
   getPatientProfileUseCase,
+  updatePatientAvatarUseCase,
   updatePatientPasswordUseCase,
   updatePatientProfileUseCase,
 } from '@/infra/factories/profileUseCases'
@@ -105,6 +108,34 @@ function getFriendlyError(error: unknown) {
   return 'Nao foi possivel salvar as alteracoes.'
 }
 
+function getMimeType(uri: string) {
+  const extension = uri.split('.').pop()?.toLowerCase()
+
+  if (extension === 'jpg' || extension === 'jpeg') {
+    return 'image/jpeg'
+  }
+
+  if (extension === 'png') {
+    return 'image/png'
+  }
+
+  if (extension === 'webp') {
+    return 'image/webp'
+  }
+
+  return 'image/jpeg'
+}
+
+function getFileName(uri: string, mimeType: string) {
+  const fileName = uri.split('/').pop()
+  if (fileName?.includes('.')) {
+    return fileName
+  }
+
+  const extension = mimeType.split('/')[1] ?? 'jpg'
+  return `avatar.${extension === 'jpeg' ? 'jpg' : extension}`
+}
+
 function useProfileViewModel() {
   const queryClient = useQueryClient()
   const signOut = useAuthStore((state) => state.signOut)
@@ -118,6 +149,7 @@ function useProfileViewModel() {
   const [newPassword, setNewPassword] = useState('')
   const [passwordConfirmation, setPasswordConfirmation] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
+  const [avatarError, setAvatarError] = useState<string | null>(null)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const profileQuery = useQuery({
@@ -141,6 +173,23 @@ function useProfileViewModel() {
         newPassword,
         passwordConfirmation,
       }),
+  })
+
+  const updateAvatarMutation = useMutation({
+    mutationFn: (asset: ImagePicker.ImagePickerAsset) => {
+      const type = asset.mimeType ?? getMimeType(asset.uri)
+      return updatePatientAvatarUseCase.execute({
+        name: asset.fileName ?? getFileName(asset.uri, type),
+        type,
+        uri: asset.uri,
+      })
+    },
+    onSuccess: (profile) => {
+      queryClient.setQueryData<Patient | undefined>(queryKeys.profile.me(), (patient) =>
+        patient ? { ...patient, avatarUrl: profile.avatarUrl } : patient,
+      )
+      void queryClient.invalidateQueries({ queryKey: queryKeys.profile.me() })
+    },
   })
 
   const profile = profileQuery.data
@@ -231,6 +280,80 @@ function useProfileViewModel() {
     }
   }
 
+  async function uploadAvatar(asset: ImagePicker.ImagePickerAsset | undefined) {
+    if (!asset) {
+      return
+    }
+
+    try {
+      setAvatarError(null)
+      await updateAvatarMutation.mutateAsync(asset)
+    } catch (error) {
+      setAvatarError(getFriendlyError(error))
+    }
+  }
+
+  async function pickAvatarFromLibrary() {
+    try {
+      setAvatarError(null)
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (!permission.granted) {
+        setAvatarError('Permita acesso as suas fotos para alterar o avatar.')
+        return
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        mediaTypes: ['images'],
+        quality: 0.85,
+      })
+
+      if (!result.canceled) {
+        await uploadAvatar(result.assets[0])
+      }
+    } catch (error) {
+      setAvatarError(getFriendlyError(error))
+    }
+  }
+
+  async function takeAvatarPhoto() {
+    try {
+      setAvatarError(null)
+      const permission = await ImagePicker.requestCameraPermissionsAsync()
+      if (!permission.granted) {
+        setAvatarError('Permita acesso a camera para tirar uma foto.')
+        return
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        cameraType: ImagePicker.CameraType.front,
+        mediaTypes: ['images'],
+        quality: 0.85,
+      })
+
+      if (!result.canceled) {
+        await uploadAvatar(result.assets[0])
+      }
+    } catch (error) {
+      setAvatarError(getFriendlyError(error))
+    }
+  }
+
+  function openAvatarOptions() {
+    if (updateAvatarMutation.isPending) {
+      return
+    }
+
+    Alert.alert('Alterar foto', 'Escolha como atualizar seu avatar.', [
+      { text: 'Galeria', onPress: () => void pickAvatarFromLibrary() },
+      { text: 'Camera', onPress: () => void takeAvatarPhoto() },
+      { text: 'Cancelar', style: 'cancel' },
+    ])
+  }
+
   async function handleLogout() {
     setIsLoggingOut(true)
     try {
@@ -245,7 +368,9 @@ function useProfileViewModel() {
 
   return {
     appointmentReminders: profile?.appointmentReminders ?? true,
+    avatarError,
     avatarInitials: toInitials(profile?.name ?? ''),
+    avatarUrl: profile?.avatarUrl ?? null,
     closeForms,
     currentPassword,
     editingField,
@@ -258,10 +383,12 @@ function useProfileViewModel() {
     isLoggingOut,
     isMainFormVisible,
     isPasswordFormVisible,
+    isUploadingAvatar: updateAvatarMutation.isPending,
     isSaving: updateProfileMutation.isPending || updatePasswordMutation.isPending,
     mainForm,
     name: profile?.name ?? 'Paciente',
     newPassword,
+    openAvatarOptions,
     openFieldForm,
     openMainForm,
     openPasswordForm: () => {
@@ -269,6 +396,7 @@ function useProfileViewModel() {
       setIsPasswordFormVisible(true)
     },
     passwordConfirmation,
+    pickAvatarFromLibrary,
     profileError: profileQuery.isError ? 'Nao foi possivel carregar seu perfil.' : null,
     refetchProfile: () => profileQuery.refetch(),
     receiveNotifications: profile?.receiveNotifications ?? true,
@@ -280,6 +408,7 @@ function useProfileViewModel() {
     setMainForm,
     setNewPassword,
     setPasswordConfirmation,
+    takeAvatarPhoto,
     updatePreference,
     values: {
       allergies: profile?.allergies ?? '',

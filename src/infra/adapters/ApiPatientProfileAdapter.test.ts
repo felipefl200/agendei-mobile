@@ -1,14 +1,16 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { patientFixture } from '@/test/fixtures'
 import { ApiPatientProfileAdapter } from './ApiPatientProfileAdapter'
 
 const httpClientMock = vi.hoisted(() => ({
   get: vi.fn(),
+  httpMultipartFilePutJson: vi.fn(),
   patch: vi.fn(),
 }))
 
 vi.mock('@/infra/http/client', () => ({
   httpClient: httpClientMock,
+  httpMultipartFilePutJson: httpClientMock.httpMultipartFilePutJson,
 }))
 
 function jsonResponse(data: unknown) {
@@ -16,6 +18,36 @@ function jsonResponse(data: unknown) {
 }
 
 describe('ApiPatientProfileAdapter', () => {
+  beforeEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('uploads avatar using multipart profile endpoint', async () => {
+    httpClientMock.httpMultipartFilePutJson.mockResolvedValue({
+      profile: {
+        avatarUrl: 'https://example.com/avatar.webp',
+        type: 'patient',
+      },
+    })
+
+    await expect(
+      new ApiPatientProfileAdapter().updateAvatar({
+        name: 'avatar.webp',
+        type: 'image/webp',
+        uri: 'file://avatar.webp',
+      }),
+    ).resolves.toEqual({
+      avatarUrl: 'https://example.com/avatar.webp',
+      type: 'patient',
+    })
+
+    expect(httpClientMock.httpMultipartFilePutJson).toHaveBeenCalledWith('profile/avatar', {
+      fieldName: 'avatar',
+      mimeType: 'image/webp',
+      uri: 'file://avatar.webp',
+    })
+  })
+
   it('parses current patient profile responses', async () => {
     httpClientMock.get.mockReturnValue(jsonResponse({ patient: patientFixture }))
 

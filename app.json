@@ -27,6 +27,13 @@
     "plugins": [
       "expo-router",
       [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Permitir que o Agendei acesse sua camera para alterar seu avatar.",
+          "photosPermission": "Permitir que o Agendei acesse suas fotos para alterar seu avatar."
+        }
+      ],
+      [
         "expo-status-bar",
         {
           "style": "dark"
