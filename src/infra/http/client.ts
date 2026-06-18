@@ -99,7 +99,8 @@ async function httpMultipartPut(path: string, body: FormData) {
     headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const response = await fetch(`${apiUrl}/${path.replace(/^\//, '')}`, {
+  const baseUrl = apiUrl.replace(/\/$/, '')
+  const response = await fetch(`${baseUrl}/${path.replace(/^\//, '')}`, {
     body,
     headers,
     method: 'PUT',
@@ -132,7 +133,8 @@ async function httpMultipartFilePutJson(path: string, input: MultipartFilePutInp
     headers.Authorization = `Bearer ${token}`
   }
 
-  const result = await new File(input.uri).upload(`${apiUrl}/${path.replace(/^\//, '')}`, {
+  const baseUrl = apiUrl.replace(/\/$/, '')
+  const result = await new File(input.uri).upload(`${baseUrl}/${path.replace(/^\//, '')}`, {
     fieldName: input.fieldName,
     headers,
     httpMethod: 'PUT',
